@@ -3,4 +3,4 @@ project(atelier_indexation C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(atelier_indexation main.c)
+add_executable(atelier_indexation main.c masks.h)

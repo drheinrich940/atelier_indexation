@@ -6,13 +6,14 @@
 #include "nrarith.h"
 #include "nralloc.h"
 
+
 int main() {
     // Initialazing image parameters
-    long *nrl, long *nrh, long *ncl, long *nch;
+    long nrl, long nrh, long ncl, long nch;
     byte **imageTest;
 
     //load an image into 2D matrix
-    imageTest= LoadPGM_bmatrix("image1.pgm", nrl, nrh, ncl, nch);
+    imageTest= LoadPGM_bmatrix("image1.pgm", &nrl, &nrh, &ncl, &nch);
 
     // Save the matrix into another .pgm file
     SavePGM_bmatrix(imageTest, nrl, nrh, ncl, nch, "imageTest.pgm") ;

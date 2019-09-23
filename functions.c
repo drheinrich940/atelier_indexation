@@ -35,3 +35,15 @@ void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int m
         }
     }
 }
+
+void binariesPicture(byte **matrix, byte **output, int matrix_max_x, int matrix_max_y, int limit){
+    for(int i = 1; i<matrix_max_x-1; i++){
+        for(int j = 1; j<matrix_max_y-1; j++){
+            if(matrix[i][j] > limit){
+                output[i][j] = 255;
+            }else{
+                output[i][j] = 0;
+            }
+        }
+    }
+}

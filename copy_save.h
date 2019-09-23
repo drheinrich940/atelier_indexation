@@ -1,0 +1,8 @@
+//
+// Created by Mugnier on 23/09/2019.
+//
+
+#ifndef ATELIER_INDEXATION_COPY_SAVE_H
+#define ATELIER_INDEXATION_COPY_SAVE_H
+
+#endif //ATELIER_INDEXATION_COPY_SAVE_H

@@ -1,10 +1,10 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-#include "def.h"
-#include "nrio.h"
-#include "nrarith.h"
-#include "nralloc.h"
+#include "nrc/def.h"
+#include "nrc/nrio.h"
+#include "nrc/nrarith.h"
+#include "nrc/nralloc.h"
 
 
 int main() {

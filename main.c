@@ -9,7 +9,7 @@
 
 int main() {
     // Initialazing image parameters
-    long nrl, long nrh, long ncl, long nch;
+    long nrl, nrh, ncl, nch;
     byte **imageTest;
 
     //load an image into 2D matrix

@@ -47,3 +47,11 @@ void binariesPicture(byte **matrix, byte **output, int matrix_max_x, int matrix_
         }
     }
 }
+
+void greyScalesRGBPicture(rgb8 **matrix, byte **output, int matrix_max_x, int matrix_max_y, int limit){
+    for(int i = 1; i<matrix_max_x-1; i++){
+        for(int j = 1; j<matrix_max_y-1; j++){
+            output[i][j] = (matrix[i][j].r + (int)matrix[i][j].g + (int)matrix[i][j].b)/3;
+        }
+    }
+}

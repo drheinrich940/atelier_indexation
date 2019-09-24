@@ -9,15 +9,14 @@
 #include "nrc/nralloc.h"
 
 
-
 /**
  *
  * @param mask
  */
-void printMask(int mask[3][3]){
-    for(int i = 0; i<3; i++){
+void printMask(int mask[3][3]) {
+    for (int i = 0; i < 3; i++) {
         printf("\n");
-        for(int j = 0; j<3; j++){
+        for (int j = 0; j < 3; j++) {
             printf(" %d ", mask[i][j]);
         }
     }
@@ -29,11 +28,11 @@ void printMask(int mask[3][3]){
  * @param value
  * @return
  */
-int verifyRGBValue(int value){
-    if(value < -255)return -255;
-    if(value > 255) return 255;
-    if(value <200 && value >0) return 0;
-    if(value <0 && value >-200) return 0;
+int verifyRGBValue(int value) {
+    if (value < -255)return -255;
+    if (value > 255) return 255;
+    if (value < 200 && value > 0) return 0;
+    if (value < 0 && value > -200) return 0;
     else return value;
 }
 
@@ -45,14 +44,17 @@ int verifyRGBValue(int value){
  * @param matrix_max_x
  * @param matrix_max_y
  */
-void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int matrix_max_x, int matrix_max_y){
-    for(int i = 1; i<matrix_max_x-1; i++){
-        for(int j = 1; j<matrix_max_y-1; j++){
-            int temp = ( mask[0][0] * (int)matrix[i-1][j-1] + mask[0][1] * (int)matrix[i-1][j] + mask[0][2] * (int)matrix[i-1][j+1]
-                         + mask[1][0] * (int)matrix[i][j-1] + mask[1][1] * (int)matrix[i][j] + mask[1][2] * (int)matrix[i][j+1]
-                         + mask[2][0] * (int)matrix[i+1][j-1] + mask[2][1] * (int)matrix[i+1][j] + mask[2][2] * (int)matrix[i+1][j+1] )/9;
+void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int matrix_max_x, int matrix_max_y) {
+    for (int i = 1; i < matrix_max_x - 1; i++) {
+        for (int j = 1; j < matrix_max_y - 1; j++) {
+            int temp = (mask[0][0] * (int) matrix[i - 1][j - 1] + mask[0][1] * (int) matrix[i - 1][j] +
+                        mask[0][2] * (int) matrix[i - 1][j + 1]
+                        + mask[1][0] * (int) matrix[i][j - 1] + mask[1][1] * (int) matrix[i][j] +
+                        mask[1][2] * (int) matrix[i][j + 1]
+                        + mask[2][0] * (int) matrix[i + 1][j - 1] + mask[2][1] * (int) matrix[i + 1][j] +
+                        mask[2][2] * (int) matrix[i + 1][j + 1]) / 9;
             //printf("%d\n",temp);
-            outputMatrix[i][j]=temp; //verifyRGBValue(temp);
+            outputMatrix[i][j] = temp; //verifyRGBValue(temp);
         }
     }
 }
@@ -65,12 +67,12 @@ void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int m
  * @param matrix_max_y
  * @param limit
  */
-void binariesPicture(byte **matrix, byte **output, int matrix_max_x, int matrix_max_y, int limit){
-    for(int i = 1; i<matrix_max_x-1; i++){
-        for(int j = 1; j<matrix_max_y-1; j++){
-            if(matrix[i][j] > limit){
+void binariesPicture(byte **matrix, byte **output, int matrix_max_x, int matrix_max_y, int limit) {
+    for (int i = 1; i < matrix_max_x - 1; i++) {
+        for (int j = 1; j < matrix_max_y - 1; j++) {
+            if (matrix[i][j] > limit) {
                 output[i][j] = 255;
-            }else{
+            } else {
                 output[i][j] = 0;
             }
         }
@@ -84,14 +86,13 @@ void binariesPicture(byte **matrix, byte **output, int matrix_max_x, int matrix_
  * @param matrix_max_x
  * @param matrix_max_y
  */
-void greyScalesRGBPicture(rgb8 **matrix, byte **output, int matrix_max_x, int matrix_max_y){
-    for(int i = 1; i<matrix_max_x-1; i++){
-        for(int j = 1; j<matrix_max_y-1; j++){
-            output[i][j] = (matrix[i][j].r + (int)matrix[i][j].g + (int)matrix[i][j].b)/3;
+void greyScalesRGBPicture(rgb8 **matrix, byte **output, int matrix_max_x, int matrix_max_y) {
+    for (int i = 1; i < matrix_max_x - 1; i++) {
+        for (int j = 1; j < matrix_max_y - 1; j++) {
+            output[i][j] = (matrix[i][j].r + (int) matrix[i][j].g + (int) matrix[i][j].b) / 3;
         }
     }
 }
-
 
 
 ///
@@ -100,35 +101,35 @@ void greyScalesRGBPicture(rgb8 **matrix, byte **output, int matrix_max_x, int ma
 /// \param nch nombre de colonne de l'image
 /// \param histogramme histogramme de l'image
 /// \return l'histogramme normaliser
-void histogramme(byte** img,int nrh , int nch,double *histogramme){
-    histogramme = malloc(256*sizeof(double));
-    int max=nrh*nch;
+void histogramme(byte **img, int nrh, int nch, double *histogramme) {
+    histogramme = malloc(256 * sizeof(double));
+    int max = nrh * nch;
     //initialise l'histogramme
-    for(int i= 0 ; i < 256 ; i++){
-        histogramme[i]=0.0;
+    for (int i = 0; i < 256; i++) {
+        histogramme[i] = 0.0;
     }
 
     //classifie l'image suivant les différents niveaux de gris
-    for(int j=0; j < nrh ; j++){
-        for(int k=0; k < nch ; k++){
-            int index=img[j][k];
-            histogramme[index]=histogramme[index]+1.0;
+    for (int j = 0; j < nrh; j++) {
+        for (int k = 0; k < nch; k++) {
+            int index = img[j][k];
+            histogramme[index] = histogramme[index] + 1.0;
         }
     }
     //normalisation de l'histogramme
-    for(int m= 0 ; m < 256 ; m++) histogramme[m]=histogramme[m]/(max*1.0);
+    for (int m = 0; m < 256; m++) histogramme[m] = histogramme[m] / (max * 1.0);
 }
 
 /// Calcul la Distance entre 2 histogramme
 /// \param hist1
 /// \param hist2
 /// \return distance de Bhattachryaa
-double bhattacharyyaDistance(double* hist1,double* hist2){
-    double distance=0.0;
-    for(int i=0;i < 256 ; i++){
-        distance+=sqrt(hist1[i]*hist2[i]);
+double bhattacharyyaDistance(double *hist1, double *hist2) {
+    double distance = 0.0;
+    for (int i = 0; i < 256; i++) {
+        distance += sqrt(hist1[i] * hist2[i]);
     }
-    distance=-log(distance);
+    distance = -log(distance);
     return distance;
 }
 
@@ -137,86 +138,99 @@ double bhattacharyyaDistance(double* hist1,double* hist2){
 /// \param nrh nombre de lignes
 /// \param nch nombre de colonnes
 /// \return le taux de rouge d'une image
-double tauxDeRouge(rgb8** img,int nrh , int nch){
-    double tauxr=0.0;
-    double tauxg=0.0;
-    double tauxb=0.0;
-    for(int i=0;i < nrh ; i++){
-        for(int j=0;j < nch ; j++){
-            tauxr+=img[i][j].r;
-            tauxb+=img[i][j].b;
-            tauxg+=img[i][j].g;
+double tauxDeRouge(rgb8 **img, int nrh, int nch) {
+    double tauxr = 0.0;
+    double tauxg = 0.0;
+    double tauxb = 0.0;
+    for (int i = 0; i < nrh; i++) {
+        for (int j = 0; j < nch; j++) {
+            tauxr += img[i][j].r;
+            tauxb += img[i][j].b;
+            tauxg += img[i][j].g;
         }
     }
-    tauxr=tauxr/(tauxr+tauxb+tauxg);
+    tauxr = tauxr / (tauxr + tauxb + tauxg);
     return tauxr;
 }
+
 /// Calcul le Taux de bleu dans une image
 /// \param img image coloré rgb
 /// \param nrh nombre de lignes
 /// \param nch nombre de colonnes
 /// \return le taux de bleu d'une image
-double tauxDeBleu(rgb8** img,int nrh , int nch){
-    double tauxr=0.0;
-    double tauxg=0.0;
-    double tauxb=0.0;
-    for(int i=0;i < nrh ; i++){
-        for(int j=0;j < nch ; j++){
-            tauxr+=img[i][j].r;
-            tauxb+=img[i][j].b;
-            tauxg+=img[i][j].g;
+double tauxDeBleu(rgb8 **img, int nrh, int nch) {
+    double tauxr = 0.0;
+    double tauxg = 0.0;
+    double tauxb = 0.0;
+    for (int i = 0; i < nrh; i++) {
+        for (int j = 0; j < nch; j++) {
+            tauxr += img[i][j].r;
+            tauxb += img[i][j].b;
+            tauxg += img[i][j].g;
         }
     }
-    tauxb=tauxb/(tauxr+tauxb+tauxg);
+    tauxb = tauxb / (tauxr + tauxb + tauxg);
     return tauxb;
 }
+
 /// Calcul le Taux de vert dans une image
 /// \param img image coloré rgb
 /// \param nrh nombre de lignes
 /// \param nch nombre de colonnes
 /// \return le taux de vert d'une image
-double tauxDeVert(rgb8** img,int nrh , int nch){
-    double tauxr=0.0;
-    double tauxg=0.0;
-    double tauxb=0.0;
-    for(int i=0;i < nrh ; i++){
-        for(int j=0;j < nch ; j++){
-            tauxr+=img[i][j].r;
-            tauxb+=img[i][j].b;
-            tauxg+=img[i][j].g;
+double tauxDeVert(rgb8 **img, int nrh, int nch) {
+    double tauxr = 0.0;
+    double tauxg = 0.0;
+    double tauxb = 0.0;
+    for (int i = 0; i < nrh; i++) {
+        for (int j = 0; j < nch; j++) {
+            tauxr += img[i][j].r;
+            tauxb += img[i][j].b;
+            tauxg += img[i][j].g;
         }
     }
-    tauxg=tauxg/(tauxr+tauxb+tauxg);
+    tauxg = tauxg / (tauxr + tauxb + tauxg);
     return tauxg;
 }
 
-extern int** horizontal_gradient;
-extern int** vertical_gradient;
+extern int **horizontal_gradient;
+extern int **vertical_gradient;
 
-//  Additionne 2 matrices de taille indentique
-void addTwoImages (byte** image1, byte** image2, byte** ImageSum, long nrl, long nrh, long ncl, long nch)
-{
-    long x_border=nch-ncl;
-    long y_border=nrh-nrl;
+/**
+ * Additionne deux matrices de tailles identiques.
+ * @param image1
+ * @param image2
+ * @param ImageSum
+ * @param nrl
+ * @param nrh
+ * @param ncl
+ * @param nch
+ */
+void addTwoImages(byte **image1, byte **image2, byte **ImageSum, long nrl, long nrh, long ncl, long nch) {
+    long x_border = nch - ncl;
+    long y_border = nrh - nrl;
 
-    for (long i=0; i<=x_border;i++)
-    {
-        for (long j=0; j<=y_border; j++)
-        {
-            ImageSum[i][j] = image1[i][j]+image2[i][j];
+    for (long i = 0; i <= x_border; i++) {
+        for (long j = 0; j <= y_border; j++) {
+            ImageSum[i][j] = image1[i][j] + image2[i][j];
         }
     }
 }
 
-
-
-
-
-void border_detection_RGB (byte** inputImage, byte** gradientImage, long nrl, long nrh, long ncl, long nch) {
+/**
+ *
+ * @param inputImage
+ * @param gradientImage
+ * @param nrl
+ * @param nrh
+ * @param ncl
+ * @param nch
+ */
+void border_detection_RGB(byte **inputImage, byte **gradientImage, long nrl, long nrh, long ncl, long nch) {
     byte **deriv_x, deriv_y;
-    deriv_x= bmatrix(nrl, nrh, ncl, nch);
-    deriv_y= bmatrix(nrl, nrh, ncl, nch);
+    deriv_x = bmatrix(nrl, nrh, ncl, nch);
+    deriv_y = bmatrix(nrl, nrh, ncl, nch);
     applyMaskToMatrix(horizontal_gradient, inputImage, deriv_x, ncl - nch, nrl - nrh);
     applyMaskToMatrix(vertical_gradient, inputImage, deriv_y, ncl - nch, nrl - nrh);
-    addTwoImages(deriv_y, deriv_x,gradientImage, nrl, nrh, ncl, nch);
+    addTwoImages(deriv_y, deriv_x, gradientImage, nrl, nrh, ncl, nch);
 }

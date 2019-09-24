@@ -235,6 +235,15 @@ void border_detection_RGB(byte **inputImage, byte **gradientImage, long nrl, lon
     addTwoImages(deriv_y, deriv_x, gradientImage, nrl, nrh, ncl, nch);
 }
 
+/**
+ *
+ * @param img
+ * @param gradient
+ * @param nrh
+ * @param nch
+ * @param nrl
+ * @param ncl
+ */
 void normeGradient(byte** img,byte** gradient,int nrh , int nch,int nrl,int ncl){
     byte **Gx= bmatrix(nrl, nrh, ncl, nch);
     byte **Gy= bmatrix(nrl, nrh, ncl, nch);
@@ -245,8 +254,15 @@ void normeGradient(byte** img,byte** gradient,int nrh , int nch,int nrl,int ncl)
             gradient[i][j]=(abs(Gx[i][j])+abs(Gy[i][j]))/2;
         }
     }
-
 }
+
+/**
+ *
+ * @param gradient
+ * @param nrh
+ * @param nch
+ * @return
+ */
 double moyenneNormeGradient(byte** gradient,int nrh , int nch){
     double moyenne= 0.0;
     for (int i = 0; i < nrh; i++) {

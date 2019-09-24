@@ -16,7 +16,9 @@
 
 //TODO : FREE WHAT SHOULD BE
 
-
+void printMask(int mask[3][3]);
+int verifyRGBValue(int value);
+void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int matrix_max_x, int matrix_max_y);
 void binariesPicture(byte **matrix, byte **output, int matrix_max_x, int matrix_max_y, int limit);
 void greyScalesRGBPicture(rgb8 **matrix, byte **output, int matrix_max_x, int matrix_max_y);
 void histogramme(byte** img,int nrh , int nch,double *histogramme);

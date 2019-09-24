@@ -5,8 +5,8 @@
 #include "nrc/nrio.h"
 #include "nrc/nrarith.h"
 #include "nrc/nralloc.h"
-#include "masks.h"
 #include "functions.h"
+#include "masks.h"
 
 
 int main() {

@@ -8,9 +8,9 @@
 #include "nrc/def.h"
 
 /*
- * PrintMask allows you to print the selected mask in the console. yeepee !
+ * PrintMask allows you to print the selected mask in the console.
  * VerifyMask allows you to post process and verify that the value from the mask convolution is correct.
- * ApplyMastToMatrix applies the selected 3*3 mask to the targetted matrix.
+ * ApplyMastToMatrix applies the selected 3*3 mask to the targeted matrix.
  * Binarises replaces each pixel by a white or a black one in function of its value.
  */
 

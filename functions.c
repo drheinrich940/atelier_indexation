@@ -2,6 +2,8 @@
 // Created by Henri on 23/09/2019.
 //
 #include <stdio.h>
+#include <math.h>
+#include <malloc.h>
 #include "functions.h"
 #include "nrc/def.h"
 
@@ -125,4 +127,62 @@ double bhattacharyyaDistance(double* hist1,double* hist2){
     }
     distance=-log(distance);
     return distance;
+}
+
+/// Calcul le Taux de rouge dans une image
+/// \param img image coloré rgb
+/// \param nrh nombre de lignes
+/// \param nch nombre de colonnes
+/// \return le taux de rouge d'une image
+double tauxDeRouge(rgb8** img,int nrh , int nch){
+    double tauxr=0.0;
+    double tauxg=0.0;
+    double tauxb=0.0;
+    for(int i=0;i < nrh ; i++){
+        for(int j=0;j < nch ; j++){
+            tauxr+=img[i][j].r;
+            tauxb+=img[i][j].b;
+            tauxg+=img[i][j].g;
+        }
+    }
+    tauxr=tauxr/(tauxr+tauxb+tauxg);
+    return tauxr;
+}
+/// Calcul le Taux de bleu dans une image
+/// \param img image coloré rgb
+/// \param nrh nombre de lignes
+/// \param nch nombre de colonnes
+/// \return le taux de bleu d'une image
+double tauxDeBleu(rgb8** img,int nrh , int nch){
+    double tauxr=0.0;
+    double tauxg=0.0;
+    double tauxb=0.0;
+    for(int i=0;i < nrh ; i++){
+        for(int j=0;j < nch ; j++){
+            tauxr+=img[i][j].r;
+            tauxb+=img[i][j].b;
+            tauxg+=img[i][j].g;
+        }
+    }
+    tauxb=tauxb/(tauxr+tauxb+tauxg);
+    return tauxb;
+}
+/// Calcul le Taux de vert dans une image
+/// \param img image coloré rgb
+/// \param nrh nombre de lignes
+/// \param nch nombre de colonnes
+/// \return le taux de vert d'une image
+double tauxDeVert(rgb8** img,int nrh , int nch){
+    double tauxr=0.0;
+    double tauxg=0.0;
+    double tauxb=0.0;
+    for(int i=0;i < nrh ; i++){
+        for(int j=0;j < nch ; j++){
+            tauxr+=img[i][j].r;
+            tauxb+=img[i][j].b;
+            tauxg+=img[i][j].g;
+        }
+    }
+    tauxg=tauxg/(tauxr+tauxb+tauxg);
+    return tauxg;
 }

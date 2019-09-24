@@ -26,4 +26,8 @@ double bhattacharyyaDistance(double* hist1,double* hist2);
 double tauxDeRouge(rgb8** img,int nrh , int nch);
 double tauxDeBleu(rgb8** img,int nrh , int nch);
 double tauxDeVert(rgb8** img,int nrh , int nch);
+void border_detection_RGB (byte** inputImage, byte** gradientImage, long nrl, long nrh, long ncl, long nch);
+void addTwoImages (byte** image1, byte** image2, byte** ImageSum, long nrl, long nrh, long ncl, long nch);
+
+
 #endif //ATELIER_INDEXATION_FUNCTIONS_H

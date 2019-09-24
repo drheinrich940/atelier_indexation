@@ -6,6 +6,9 @@
 #include <malloc.h>
 #include "functions.h"
 #include "nrc/def.h"
+#include "nrc/nralloc.h"
+
+
 
 /**
  *
@@ -185,4 +188,35 @@ double tauxDeVert(rgb8** img,int nrh , int nch){
     }
     tauxg=tauxg/(tauxr+tauxb+tauxg);
     return tauxg;
+}
+
+extern int** horizontal_gradient;
+extern int** vertical_gradient;
+
+//  Additionne 2 matrices de taille indentique
+void addTwoImages (byte** image1, byte** image2, byte** ImageSum, long nrl, long nrh, long ncl, long nch)
+{
+    long x_border=nch-ncl;
+    long y_border=nrh-nrl;
+
+    for (long i=0; i<=x_border;i++)
+    {
+        for (long j=0; j<=y_border; j++)
+        {
+            ImageSum[i][j] = image1[i][j]+image2[i][j];
+        }
+    }
+}
+
+
+
+
+
+void border_detection_RGB (byte** inputImage, byte** gradientImage, long nrl, long nrh, long ncl, long nch) {
+    byte **deriv_x, deriv_y;
+    deriv_x= bmatrix(nrl, nrh, ncl, nch);
+    deriv_y= bmatrix(nrl, nrh, ncl, nch);
+    applyMaskToMatrix(horizontal_gradient, inputImage, deriv_x, ncl - nch, nrl - nrh);
+    applyMaskToMatrix(vertical_gradient, inputImage, deriv_y, ncl - nch, nrl - nrh);
+    addTwoImages(deriv_y, deriv_x,gradientImage, nrl, nrh, ncl, nch);
 }

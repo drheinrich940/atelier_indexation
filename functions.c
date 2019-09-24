@@ -55,3 +55,41 @@ void greyScalesRGBPicture(rgb8 **matrix, byte **output, int matrix_max_x, int ma
         }
     }
 }
+
+///
+/// \param img l'image binariser
+/// \param nrh nombre de ligne de l'image
+/// \param nch nombre de colonne de l'image
+/// \param histogramme histogramme de l'image
+/// \return l'histogramme normaliser
+void histogramme(byte** img,int nrh , int nch,double *histogramme){
+    histogramme = malloc(256*sizeof(double));
+    int max=nrh*nch;
+    //initialise l'histogramme
+    for(int i= 0 ; i < 256 ; i++){
+        histogramme[i]=0.0;
+    }
+
+    //classifie l'image suivant les différents niveaux de gris
+    for(int j=0; j < nrh ; j++){
+        for(int k=0; k < nch ; k++){
+            int index=img[j][k];
+            histogramme[index]=histogramme[index]+1.0;
+        }
+    }
+    //normalisation de l'histogramme
+    for(int m= 0 ; m < 256 ; m++) histogramme[m]=histogramme[m]/(max*1.0);
+}
+
+/// Calcul la Distance entre 2 histogramme
+/// \param hist1
+/// \param hist2
+/// \return distance de Bhattachryaa
+double bhattacharyyaDistance(double* hist1,double* hist2){
+    double distance=0.0;
+    for(int i=0;i < 256 ; i++){
+        distance+=sqrt(hist1[i]*hist2[i]);
+    }
+    distance=-log(distance);
+    return distance;
+}

@@ -46,8 +46,8 @@ void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int m
             int temp = ( mask[0][0] * (int)matrix[i-1][j-1] + mask[0][1] * (int)matrix[i-1][j] + mask[0][2] * (int)matrix[i-1][j+1]
                          + mask[1][0] * (int)matrix[i][j-1] + mask[1][1] * (int)matrix[i][j] + mask[1][2] * (int)matrix[i][j+1]
                          + mask[2][0] * (int)matrix[i+1][j-1] + mask[2][1] * (int)matrix[i+1][j] + mask[2][2] * (int)matrix[i+1][j+1] )/9;
-            printf("%d\n",temp);
-            outputMatrix[i][j]=verifyRGBValue(temp);
+            //printf("%d\n",temp);
+            outputMatrix[i][j]=temp; //verifyRGBValue(temp);
         }
     }
 }

@@ -17,7 +17,7 @@ int main() {
      * nrh = row highest value
      * nch = column highest value
      */
-    long *nrl, *nrh, *ncl, *nch;
+    long nrl, nrh, ncl, nch;
     byte **imageTest;
 
     // Load an image into 2D matrix

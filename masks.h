@@ -23,9 +23,4 @@ const int vertical_gradient[3][3] = {
         {1,2,1}
 };
 
-const int averaging_filter[3][3] = {
-        {1/9,1/9,1/9},
-        {1/9,1/9,1/9},
-        {1/9,1/9,1/9}
-};
 #endif //ATELIER_INDEXATION_MASKS_H

@@ -234,3 +234,38 @@ void border_detection_RGB(byte **inputImage, byte **gradientImage, long nrl, lon
     applyMaskToMatrix(vertical_gradient, inputImage, deriv_y, ncl - nch, nrl - nrh);
     addTwoImages(deriv_y, deriv_x, gradientImage, nrl, nrh, ncl, nch);
 }
+
+void normeGradient(byte** img,byte** gradient,int nrh , int nch,int nrl,int ncl){
+    byte **Gx= bmatrix(nrl, nrh, ncl, nch);
+    byte **Gy= bmatrix(nrl, nrh, ncl, nch);
+    for (int i = nrl+1  ; i < nrh; i++) {
+        for (int j = ncl+1; j < nch; j++) {
+            Gx[i][j]=abs((horizontal_gradient[0][0]*img[i-1][j-1] + horizontal_gradient[0][2]*img[i-1][j+1] +horizontal_gradient[1][0]*img[i][j-1] +horizontal_gradient[1][2]*img[i-1][j-1]+horizontal_gradient[0][2]*img[i+1][j-1]+horizontal_gradient[2][2]*img[i+1][j+1] )/4);
+            Gy[i][j]=abs((vertical_gradient[0][0]*img[i-1][j-1] + vertical_gradient[0][2]*img[i-1][j+1] +horizontal_gradient[1][0]*img[i][j-1] +vertical_gradient[1][2]*img[i-1][j-1]+vertical_gradient[0][2]*img[i+1][j-1]+vertical_gradient[2][2]*img[i+1][j+1] )/4);
+            gradient[i][j]=(abs(Gx[i][j])+abs(Gy[i][j]))/2;
+        }
+    }
+
+}
+double moyenneNormeGradient(byte** gradient,int nrh , int nch){
+    double moyenne= 0.0;
+    for (int i = 0; i < nrh; i++) {
+        for (int j = 0; j < nch; j++) {
+            moyenne +=gradient[i][j];
+        }
+    }
+    moyenne=moyenne/(nrh*nch);
+    return  moyenne;
+}
+
+/**
+ * Sauvegarde d'un histogramme
+ * @param nom nom du fichier
+ * @param histogramme histogramme a enregistré
+ */
+void sauvegardeHistogramme(char* nom,double* histogramme){
+    FILE * f=fopen(nom,"wa");
+    for(int i =0 ; i < 256 ; i++){
+        fprintf(f,"%lf \n",histogramme);
+    }
+}

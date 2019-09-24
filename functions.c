@@ -5,6 +5,10 @@
 #include "functions.h"
 #include "nrc/def.h"
 
+/**
+ *
+ * @param mask
+ */
 void printMask(int mask[3][3]){
     for(int i = 0; i<3; i++){
         printf("\n");
@@ -15,6 +19,11 @@ void printMask(int mask[3][3]){
     printf("\n");
 }
 
+/**
+ *
+ * @param value
+ * @return
+ */
 int verifyRGBValue(int value){
     if(value < -255)return -255;
     if(value > 255) return 255;
@@ -23,6 +32,14 @@ int verifyRGBValue(int value){
     else return value;
 }
 
+/**
+ *
+ * @param mask
+ * @param matrix
+ * @param outputMatrix
+ * @param matrix_max_x
+ * @param matrix_max_y
+ */
 void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int matrix_max_x, int matrix_max_y){
 
     for(int i = 1; i<matrix_max_x-1; i++){
@@ -36,6 +53,14 @@ void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int m
     }
 }
 
+/**
+ *
+ * @param matrix
+ * @param output
+ * @param matrix_max_x
+ * @param matrix_max_y
+ * @param limit
+ */
 void binariesPicture(byte **matrix, byte **output, int matrix_max_x, int matrix_max_y, int limit){
     for(int i = 1; i<matrix_max_x-1; i++){
         for(int j = 1; j<matrix_max_y-1; j++){
@@ -48,6 +73,13 @@ void binariesPicture(byte **matrix, byte **output, int matrix_max_x, int matrix_
     }
 }
 
+/**
+ *
+ * @param matrix
+ * @param output
+ * @param matrix_max_x
+ * @param matrix_max_y
+ */
 void greyScalesRGBPicture(rgb8 **matrix, byte **output, int matrix_max_x, int matrix_max_y){
     for(int i = 1; i<matrix_max_x-1; i++){
         for(int j = 1; j<matrix_max_y-1; j++){

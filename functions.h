@@ -14,6 +14,8 @@
  * Binarises replaces each pixel by a white or a black one in function of its value.
  */
 
+//TODO : FREE WHAT SHOULD BE
+
 void printMask(int mask[3][3]);
 int verifyRGBValue(int value);
 void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int matrix_max_x, int matrix_max_y);

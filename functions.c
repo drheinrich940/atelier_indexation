@@ -219,26 +219,6 @@ double tauxDeVert(rgb8 **img, int nrh, int nch) {
 }
 
 
-/**
- * Additionne deux matrices de tailles identiques.
- * @param image1
- * @param image2
- * @param ImageSum
- * @param nrl
- * @param nrh
- * @param ncl
- * @param nch
- */
-void addTwoImages(byte **image1, byte **image2, byte **ImageSum, long nrl, long nrh, long ncl, long nch) {
-    long x_border = nch - ncl;
-    long y_border = nrh - nrl;
-
-    for (long i = 0; i <= x_border; i++) {
-        for (long j = 0; j <= y_border; j++) {
-            ImageSum[i][j] = image1[i][j] + image2[i][j];
-        }
-    }
-}
 
 /**
  *

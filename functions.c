@@ -30,6 +30,7 @@ void printMask(const int mask[3][3]) {
  */
 int verifyRGBValue(int value) {
     if (value < 0)return 0;
+    // Edit value to 15 or 20 to have absolute 255 pixel value edge detection
     if (value > 255) return 255;
     else return value;
 }
@@ -42,15 +43,17 @@ int verifyRGBValue(int value) {
  * @param matrix_max_x
  * @param matrix_max_y
  */
-void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int matrix_max_x, int matrix_max_y){
+void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int matrix_max_x, int matrix_max_y) {
 
-    for(int i = 1; i<matrix_max_x-1; i++){
-        for(int j = 1; j<matrix_max_y-1; j++){
-            int temp = ( mask[0][0] * (int)matrix[i-1][j-1] + mask[0][1] * (int)matrix[i-1][j] + mask[0][2] * (int)matrix[i-1][j+1]
-                         + mask[1][0] * (int)matrix[i][j-1] + mask[1][1] * (int)matrix[i][j] + mask[1][2] * (int)matrix[i][j+1]
-                         + mask[2][0] * (int)matrix[i+1][j-1] + mask[2][1] * (int)matrix[i+1][j] + mask[2][2] * (int)matrix[i+1][j+1] )/9;
-            printf("%d\n",temp);
-            outputMatrix[i][j]=verifyRGBValue(temp);
+    for (int i = 1; i < matrix_max_x - 1; i++) {
+        for (int j = 1; j < matrix_max_y - 1; j++) {
+            int temp = (mask[0][0] * (int) matrix[i - 1][j - 1] + mask[0][1] * (int) matrix[i - 1][j] +
+                        mask[0][2] * (int) matrix[i - 1][j + 1]
+                        + mask[1][0] * (int) matrix[i][j - 1] + mask[1][1] * (int) matrix[i][j] +
+                        mask[1][2] * (int) matrix[i][j + 1]
+                        + mask[2][0] * (int) matrix[i + 1][j - 1] + mask[2][1] * (int) matrix[i + 1][j] +
+                        mask[2][2] * (int) matrix[i + 1][j + 1]) / 9;
+            outputMatrix[i][j] = verifyRGBValue(temp);
         }
     }
 }
@@ -63,7 +66,8 @@ void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int m
  * @param matrix_max_x
  * @param matrix_max_y
  */
-void applyMaskToMatrix_bounded(const int mask[3][3], byte **matrix, byte **outputMatrix, int nrl, int nrh, int ncl, int nch) {
+void applyMaskToMatrix_bounded(const int mask[3][3], byte **matrix, byte **outputMatrix, int nrl, int nrh, int ncl,
+                               int nch) {
     for (int i = nrl + 1; i < nrh - 1; i++) {
         for (int j = ncl + 1; j < nch - 1; j++) {
             int pixel_value = floor((mask[0][0] * matrix[i - 1][j - 1] + mask[0][1] * matrix[i - 1][j] +

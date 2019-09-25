@@ -21,7 +21,7 @@ declare
 begin
 
     -- Création des lignes dans la table des images
-    for j in 1..500
+    for j in 1..4
         loop
             insert into multimedia(nom, image, signature)
             values (j || '.jpg', ordsys.ordimage.init(), ordsys.ordimageSignature.init());

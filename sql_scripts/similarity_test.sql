@@ -34,7 +34,6 @@ begin
     from multimedia
     where nom = '2.jpg';
 
-
     sim := ordsys.ordimageSignature.isSimilar(sig1, sig2, 'color = 0.5, texture = 0, shape = 0, location = 0', 10);
 
     if sim = 1 then
@@ -46,7 +45,4 @@ begin
     -- calcul distance entre image1.jpg et image2.jpg
     dist := ordsys.ordimageSignature.evaluateScore(sig1, sig2, 'color = 0.5, texture = 0, shape =0, location = 0');
     dbms_output.put_line('Distance : ' || dist);
-
-
 end ;
-

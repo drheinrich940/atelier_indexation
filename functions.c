@@ -4,10 +4,13 @@
 #include <stdio.h>
 #include <math.h>
 #include <malloc.h>
+#include <dirent.h>
+#include<string.h>
 #include "functions.h"
 #include "nrc/def.h"
-#include "nrc/nralloc.h"
-
+#include ".\nrc\nrio.h"
+#include ".\nrc\nrarith.h"
+#include ".\nrc\nralloc.h"
 
 /**
  *
@@ -312,9 +315,104 @@ double moyenneNormeGradient(byte **gradient, int nrh, int nch) {
  * @param nom nom du fichier
  * @param histogramme histogramme a enregistré
  */
-void sauvegardeHistogramme(char *nom, double *histogramme) {
-    FILE *f = fopen(nom, "wa");
+void sauvegardeHistogramme( double *histogramme,FILE* f) {
     for (int i = 0; i < 256; i++) {
-        fprintf(f, "%lf \n", histogramme);
+        fprintf(f, "%lf;", histogramme[i]);
     }
+}
+
+
+/**
+ *
+ * @param img
+ * @param nrh
+ * @param nch
+ * @return 1 si l'image est coloré ou 0 si l'image est en noir est blanc
+ */
+int colored(rgb8** img,int nrh , int nch){
+    int i=0;
+    int j=0;
+    int color=0;
+    for(int i=0;i < nrh ; i++) {
+        for (int j = 0; j < nch; j++) {
+            if (img[i][j].r != img[i][j].b || img[i][j].r != img[i][j].g)
+                color=1;
+        }
+    }
+    return color;
+}
+
+
+int lectureDossier(char *nomdossier){
+    DIR* rep =NULL;
+    FILE* f;
+    struct dirent* currentImg=NULL;
+    f=fopen("..\\output.csv","wa");
+    if(f == NULL){
+        printf("Error open output file");
+        return 1;
+    }
+    // ouverture du dossier
+    rep = opendir(nomdossier);
+    if(rep== NULL) {
+        printf("Error read directory");
+        return 1;
+    }
+    //lecture des dossier
+    currentImg = readdir(rep);
+    currentImg = readdir(rep);
+// lecture des images
+    while ((currentImg = readdir(rep)) != NULL){
+        //vérification du type
+        char imgName[255];
+        sprintf(imgName,"%s\\%s",nomdossier,currentImg->d_name);
+        char* imgType=NULL;
+        //récupération de l'extension
+        imgType=strtok(currentImg->d_name,".");
+        imgType=strtok(NULL,".");
+        if(!strcmp(imgType,"ppm")){
+            double tauxR,tauxG,tauxB=0.0;
+            double texture=0.0;
+            double moyenneGradient=0.0;
+
+            int color=0;
+            int nbPixelContour=0;
+            rgb8** image;
+            byte** imageBW;
+            byte** gradient;
+            long nrl,nrh,ncl,nch;
+            image=LoadPPM_rgb8matrix(imgName, &nrl, &nrh, &ncl, &nch);
+            imageBW=bmatrix(nrl, nrh, ncl, nch);
+            gradient=bmatrix(nrl, nrh, ncl, nch);
+            color=colored(image,nrh,nch);
+            greyScalesRGBPicture(image,imageBW,nrh,nch);
+            double *hist= malloc(256 * sizeof(double));
+            histogramme(imageBW,nrh,nch,hist);
+            if(color){
+                tauxR=tauxDeRouge(image,nrh,nch);
+                tauxG=tauxDeVert(image,nrh,nch);
+                tauxB=tauxDeBleu(image,nrh,nch);
+            }
+            else{
+                tauxR=0.33;
+                tauxG=0.33;
+                tauxB=0.33;
+            }
+            texture=0;
+            normeGradient(image,gradient,nrl,nrh,ncl,nch);
+            moyenneGradient=moyenneNormeGradient(gradient,nrh,nch);
+            fprintf(f,"%d;%d;%lf;%lf;%lf;%lf",color,nbPixelContour,tauxR,tauxG,tauxB,moyenneGradient);
+            sauvegardeHistogramme(hist,f);
+            fprintf(f,"\n");
+            free_bmatrix(image, nrl,  nrh, ncl, nch) ;
+            free_bmatrix(gradient, nrl,  nrh, ncl, nch) ;
+            free(hist);
+        }
+    }
+    fclose(f);
+    if (closedir(rep) == -1){
+        printf("Error close directory");
+        return 1;
+    }
+    return 0;
 }

@@ -31,7 +31,9 @@ void normeGradient(byte** img, byte** output, long nrl , long nrh,long ncl,long 
 double moyenneNormeGradient(byte** gradient,int nrh , int nch);
 void detectionBords (byte** img, byte** output, long threshold, long nrl , long nrh,long ncl,long nch);
 void addTwoImages (byte** image1, byte** image2, byte** ImageSum, long nrl, long nrh, long ncl, long nch);
-void sauvegardeHistogramme(char* nom,double* histogramme);
+void sauvegardeHistogramme(double* histogramme,FILE* f);
+int lectureDossier(char *nomdossier);
+int colored(rgb8** img,int nrh , int nch);
 
 extern const int horizontal_gradient [3][3] ;
 extern const int vertical_gradient[3][3];

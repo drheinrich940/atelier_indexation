@@ -226,12 +226,7 @@ void addTwoImages(byte **image1, byte **image2, byte **ImageSum, long nrl, long 
  * @param nch
  */
 void border_detection_RGB(byte **inputImage, byte **gradientImage, long nrl, long nrh, long ncl, long nch) {
-    byte **deriv_x, deriv_y;
-    deriv_x = bmatrix(nrl, nrh, ncl, nch);
-    deriv_y = bmatrix(nrl, nrh, ncl, nch);
-    applyMaskToMatrix(horizontal_gradient, inputImage, deriv_x, ncl - nch, nrl - nrh);
-    applyMaskToMatrix(vertical_gradient, inputImage, deriv_y, ncl - nch, nrl - nrh);
-    addTwoImages(deriv_y, deriv_x, gradientImage, nrl, nrh, ncl, nch);
+
 }
 
 /**
@@ -243,13 +238,6 @@ void border_detection_RGB(byte **inputImage, byte **gradientImage, long nrl, lon
  * @param nrl
  * @param ncl
  */
-///
-/// \param img
-/// \param output
-/// \param nrl
-/// \param nrh
-/// \param ncl
-/// \param nch
 void normeGradient(byte** img, byte** output, int nrl , int nrh,int ncl,int nch) {
     byte **deriv_x, **deriv_y;
     deriv_x = bmatrix(nrl, nrh, ncl, nch);

@@ -18,7 +18,8 @@
 
 void printMask(const int mask[3][3]);
 int verifyRGBValue(int value);
-void applyMaskToMatrix(const int mask[3][3], byte **matrix, byte **outputMatrix, int nrl, int nrh, int ncl, int nch);
+void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int matrix_max_x, int matrix_max_y);
+void applyMaskToMatrix_bounded(const int mask[3][3], byte **matrix, byte **outputMatrix, int nrl, int nrh, int ncl, int nch);
 void binariesPicture(byte **matrix, byte **output, int matrix_max_x, int matrix_max_y, int limit);
 void greyScalesRGBPicture(rgb8 **matrix, byte **output, int matrix_max_x, int matrix_max_y);
 void histogramme(byte** img,int nrh , int nch,double *histogramme);

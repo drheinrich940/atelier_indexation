@@ -9,7 +9,6 @@
 #include "nrc/nralloc.h"
 
 
-
 /**
  *
  * @param mask
@@ -43,16 +42,37 @@ int verifyRGBValue(int value) {
  * @param matrix_max_x
  * @param matrix_max_y
  */
-void applyMaskToMatrix(const int mask[3][3], byte **matrix, byte **outputMatrix, int nrl, int nrh, int ncl, int nch) {
-    for (int i = nrl+1; i < nrh - 1; i++) {
-        for (int j =ncl+ 1; j < nch - 1; j++) {
-                int pixel_value  = floor((mask[0][0] * matrix[i - 1][j - 1] + mask[0][1] *  matrix[i - 1][j] +
-                        mask[0][2] *  matrix[i - 1][j + 1]
-                        + mask[1][0] *  matrix[i][j - 1] + mask[1][1] *  matrix[i][j] +
-                        mask[1][2] *  matrix[i][j + 1]
-                        + mask[2][0] *  matrix[i + 1][j - 1] + mask[2][1] *  matrix[i + 1][j] +
-                        mask[2][2] *  matrix[i + 1][j + 1]) / 9);
-            outputMatrix[i][j]= verifyRGBValue(pixel_value);
+void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int matrix_max_x, int matrix_max_y){
+
+    for(int i = 1; i<matrix_max_x-1; i++){
+        for(int j = 1; j<matrix_max_y-1; j++){
+            int temp = ( mask[0][0] * (int)matrix[i-1][j-1] + mask[0][1] * (int)matrix[i-1][j] + mask[0][2] * (int)matrix[i-1][j+1]
+                         + mask[1][0] * (int)matrix[i][j-1] + mask[1][1] * (int)matrix[i][j] + mask[1][2] * (int)matrix[i][j+1]
+                         + mask[2][0] * (int)matrix[i+1][j-1] + mask[2][1] * (int)matrix[i+1][j] + mask[2][2] * (int)matrix[i+1][j+1] )/9;
+            printf("%d\n",temp);
+            outputMatrix[i][j]=verifyRGBValue(temp);
+        }
+    }
+}
+
+/**
+ *
+ * @param mask
+ * @param matrix
+ * @param outputMatrix
+ * @param matrix_max_x
+ * @param matrix_max_y
+ */
+void applyMaskToMatrix_bounded(const int mask[3][3], byte **matrix, byte **outputMatrix, int nrl, int nrh, int ncl, int nch) {
+    for (int i = nrl + 1; i < nrh - 1; i++) {
+        for (int j = ncl + 1; j < nch - 1; j++) {
+            int pixel_value = floor((mask[0][0] * matrix[i - 1][j - 1] + mask[0][1] * matrix[i - 1][j] +
+                                     mask[0][2] * matrix[i - 1][j + 1]
+                                     + mask[1][0] * matrix[i][j - 1] + mask[1][1] * matrix[i][j] +
+                                     mask[1][2] * matrix[i][j + 1]
+                                     + mask[2][0] * matrix[i + 1][j - 1] + mask[2][1] * matrix[i + 1][j] +
+                                     mask[2][2] * matrix[i + 1][j + 1]) / 9);
+            outputMatrix[i][j] = verifyRGBValue(pixel_value);
 
         }
     }
@@ -223,20 +243,20 @@ void addTwoImages(byte **image1, byte **image2, byte **ImageSum, long nrl, long 
  * @param ncl
  * @param nch
  */
-void detectionBords(byte** img, byte** output, long threshold, long nrl , long nrh,long ncl,long nch) {
+void detectionBords(byte **img, byte **output, long threshold, long nrl, long nrh, long ncl, long nch) {
     byte **deriv_x, **deriv_y;
     long normeGradient;
     deriv_x = bmatrix(nrl, nrh, ncl, nch);
     deriv_y = bmatrix(nrl, nrh, ncl, nch);
-    applyMaskToMatrix(horizontal_gradient, img, deriv_x, nrl, nrh, ncl, nch);
-    applyMaskToMatrix(vertical_gradient, img, deriv_y, nrl, nrh, ncl, nch);
-    for (int i = 1; i < nrh - nrl ; i++) {
-        for (int j = 1; j < nch-ncl; j++) {
-            normeGradient=sqrt(pow(deriv_x[i][j], 2) + pow(deriv_y[i][j], 2));
-            if (normeGradient>=threshold){
-                output[i][j] = normeGradient;}
-            else{
-                output[i][j]=0;
+    applyMaskToMatrix_bounded(horizontal_gradient, img, deriv_x, nrl, nrh, ncl, nch);
+    applyMaskToMatrix_bounded(vertical_gradient, img, deriv_y, nrl, nrh, ncl, nch);
+    for (int i = 1; i < nrh - nrl; i++) {
+        for (int j = 1; j < nch - ncl; j++) {
+            normeGradient = sqrt(pow(deriv_x[i][j], 2) + pow(deriv_y[i][j], 2));
+            if (normeGradient >= threshold) {
+                output[i][j] = normeGradient;
+            } else {
+                output[i][j] = 0;
             }
         }
     }
@@ -251,18 +271,19 @@ void detectionBords(byte** img, byte** output, long threshold, long nrl , long n
  * @param nrl
  * @param ncl
  */
-void normeGradient(byte** img, byte** output, long nrl , long nrh,long ncl,long nch) {
+void normeGradient(byte **img, byte **output, long nrl, long nrh, long ncl, long nch) {
     byte **deriv_x, **deriv_y;
     deriv_x = bmatrix(nrl, nrh, ncl, nch);
     deriv_y = bmatrix(nrl, nrh, ncl, nch);
-    applyMaskToMatrix(horizontal_gradient, img, deriv_x, nrl, nrh, ncl, nch);
-    applyMaskToMatrix(vertical_gradient, img, deriv_y, nrl, nrh, ncl, nch);
-    for (int i = 1; i < nrh - nrl ; i++) {
-        for (int j = 1; j < nch-ncl; j++) {
+    applyMaskToMatrix_bounded(horizontal_gradient, img, deriv_x, nrl, nrh, ncl, nch);
+    applyMaskToMatrix_bounded(vertical_gradient, img, deriv_y, nrl, nrh, ncl, nch);
+    for (int i = 1; i < nrh - nrl; i++) {
+        for (int j = 1; j < nch - ncl; j++) {
             output[i][j] = sqrt(pow(deriv_x[i][j], 2) + pow(deriv_y[i][j], 2));
         }
     }
 }
+
 /**
  *
  * @param gradient
@@ -270,16 +291,16 @@ void normeGradient(byte** img, byte** output, long nrl , long nrh,long ncl,long 
  * @param nch
  * @return
  */
-double moyenneNormeGradient(byte** gradient,int nrh , int nch){
-    double moyenne= 0.0;
+double moyenneNormeGradient(byte **gradient, int nrh, int nch) {
+    double moyenne = 0.0;
     for (int i = 0; i < nrh; i++) {
         for (int j = 0; j < nch; j++) {
-            moyenne +=gradient[i][j];
+            moyenne += gradient[i][j];
 
         }
     }
-    moyenne=moyenne/(nrh*nch);
-    return  moyenne;
+    moyenne = moyenne / (nrh * nch);
+    return moyenne;
 }
 
 /**
@@ -287,9 +308,9 @@ double moyenneNormeGradient(byte** gradient,int nrh , int nch){
  * @param nom nom du fichier
  * @param histogramme histogramme a enregistré
  */
-void sauvegardeHistogramme(char* nom,double* histogramme){
-    FILE * f=fopen(nom,"wa");
-    for(int i =0 ; i < 256 ; i++){
-        fprintf(f,"%lf \n",histogramme);
+void sauvegardeHistogramme(char *nom, double *histogramme) {
+    FILE *f = fopen(nom, "wa");
+    for (int i = 0; i < 256; i++) {
+        fprintf(f, "%lf \n", histogramme);
     }
 }

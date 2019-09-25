@@ -22,7 +22,7 @@ int main() {
     byte **imageTest;
 
     // Load an image into 2D matrix
-    imageTest= LoadPGM_bmatrix("image1.pgm", &nrl, &nrh, &ncl, &nch);
+    imageTest = LoadPGM_bmatrix("image1.pgm", &nrl, &nrh, &ncl, &nch);
 
     // Prints the chosen mask
     printMask(horizontal_gradient);
@@ -37,18 +37,18 @@ int main() {
 
     // Applying the horisontal gradient to the image test.
     // nrh is the max value on the rows, and nch is the max value on the columns.
-    applyMaskToMatrix(horizontal_gradient, imageTest, output, nrl, nrh, ncl, nch);
+    applyMaskToMatrix_bounded(horizontal_gradient, imageTest, output, nrl, nrh, ncl, nch);
     //detectionBords(imageTest, output,50, nrl, nrh, ncl, nch);
     printf("Applied mask to matrix\n");
 
     // Save the matrix into another .pgm file.
-    SavePGM_bmatrix(output, nrl, nrh, ncl, nch, "output.pgm") ;
+    SavePGM_bmatrix(output, nrl, nrh, ncl, nch, "output.pgm");
     printf("Saved the output\n");
-    printf("%lu\n",output[2][2] );
+    printf("%lu\n", output[2][2]);
 
     // Clean the memory.
-    free_bmatrix(imageTest, nrl,  nrh, ncl, nch) ;
-    free_bmatrix(output, nrl,  nrh, ncl, nch) ;
+    free_bmatrix(imageTest, nrl, nrh, ncl, nch);
+    free_bmatrix(output, nrl, nrh, ncl, nch);
     printf("Memory is free");
     return 0;
 }

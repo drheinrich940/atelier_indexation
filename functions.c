@@ -9,7 +9,6 @@
 #include "functions.h"
 #include "nrc/def.h"
 #include ".\nrc\nrio.h"
-#include ".\nrc\nrarith.h"
 #include ".\nrc\nralloc.h"
 
 /**
@@ -36,6 +35,14 @@ int verifyRGBValue(int value) {
     // Edit value to 15 or 20 to have absolute 255 pixel value edge detection
     if (value > 255) return 255;
     else return value;
+}
+
+void initMatrix(byte **matrix, long nrh, long nch){
+    for (int i = 0; i < nrh; i++) {
+        for (int j = 0; j < nch; j++) {
+            matrix[i][j] = 0;
+        }
+    }
 }
 
 /**
@@ -254,6 +261,8 @@ void detectionBords(byte **img, byte **output, long threshold, long nrl, long nr
     long normeGradient;
     deriv_x = bmatrix(nrl, nrh, ncl, nch);
     deriv_y = bmatrix(nrl, nrh, ncl, nch);
+    initMatrix(deriv_x, nrh, nch);
+    initMatrix(deriv_y, nrh, nch);
     applyMaskToMatrix_bounded(horizontal_gradient, img, deriv_x, nrl, nrh, ncl, nch);
     applyMaskToMatrix_bounded(vertical_gradient, img, deriv_y, nrl, nrh, ncl, nch);
     for (int i = 1; i < nrh - nrl; i++) {

@@ -20,7 +20,7 @@ int main() {
     byte **imageTest;
 
     // Load an image into 2D matrix
-    imageTest = LoadPGM_bmatrix("114.pgm", &nrl, &nrh, &ncl, &nch);
+    imageTest = LoadPGM_bmatrix("rice.pgm", &nrl, &nrh, &ncl, &nch);
 
     // Prints the chosen mask
     printMask(horizontal_gradient);
@@ -31,6 +31,7 @@ int main() {
     // Creating an empty matrix with our target dimensions.
     //output = bmatrix(nrl, nrh, ncl, nch);
     output_fromBounded = bmatrix(nrl, nrh, ncl, nch);
+    initMatrix(output_fromBounded, nrh, nch);
     printf("Created output matrix\n");
     printf("%lu %lu \n", nrh, nch);
 

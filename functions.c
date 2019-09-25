@@ -37,7 +37,7 @@ int verifyRGBValue(int value) {
     else return value;
 }
 
-void initMatrix(byte **matrix, long nrh, long nch){
+void initMatrix(byte **matrix, long nrh, long nch) {
     for (int i = 0; i < nrh; i++) {
         for (int j = 0; j < nch; j++) {
             matrix[i][j] = 0;
@@ -235,11 +235,12 @@ double tauxDeVert(rgb8 **img, int nrh, int nch) {
  * @param ncl
  * @param nch
  */
-void detectionBords(byte **img, byte **output, long threshold,double* moyenneGradient,long* nbPixelBord, long nrl, long nrh, long ncl, long nch) {
+void detectionBords(byte **img, byte **output, long threshold, double *moyenneGradient, long *nbPixelBord, long nrl,
+                    long nrh, long ncl, long nch) {
     byte **deriv_x, **deriv_y;
     double normeGradient;
-    *nbPixelBord=0;
-    *moyenneGradient=0;
+    *nbPixelBord = 0;
+    *moyenneGradient = 0;
     deriv_x = bmatrix(nrl, nrh, ncl, nch);
     deriv_y = bmatrix(nrl, nrh, ncl, nch);
 
@@ -252,17 +253,16 @@ void detectionBords(byte **img, byte **output, long threshold,double* moyenneGra
     for (int i = 1; i < nrh - nrl; i++) {
         for (int j = 1; j < nch - ncl; j++) {
             normeGradient = sqrt(pow(deriv_x[i][j], 2) + pow(deriv_y[i][j], 2));
-            *moyenneGradient+=normeGradient;
+            *moyenneGradient += normeGradient;
             if (normeGradient >= threshold) {
                 output[i][j] = 255;
                 (*nbPixelBord)++;
-            }
-            else {
+            } else {
                 output[i][j] = 0;
             }
         }
     }
-    *moyenneGradient = *moyenneGradient/((nrh - nrl-1)*(nch - ncl-1));
+    *moyenneGradient = *moyenneGradient / ((nrh - nrl - 1) * (nch - ncl - 1));
 }
 
 /**
@@ -292,9 +292,9 @@ void normeGradient(byte **img, byte **output, long nrl, long nrh, long ncl, long
  * @param nom nom du fichier
  * @param histogramme histogramme a enregistré
  */
-void sauvegardeHistogramme( double *histogramme,FILE* f) {
+void sauvegardeHistogramme(double *histogramme, FILE *f) {
     for (int i = 0; i < 256; i++) {
-        fprintf(f, "%lf;", histogramme[i]);
+        fprintf(f, "%lf,", histogramme[i]);
     }
 }
 
@@ -306,32 +306,31 @@ void sauvegardeHistogramme( double *histogramme,FILE* f) {
  * @param nch
  * @return 1 si l'image est coloré ou 0 si l'image est en noir est blanc
  */
-int colored(rgb8** img,int nrh , int nch){
-    int i=0;
-    int j=0;
-    int color=0;
-    for(int i=0;i < nrh ; i++) {
+int colored(rgb8 **img, int nrh, int nch) {
+    int i = 0;
+    int j = 0;
+    int color = 0;
+    for (int i = 0; i < nrh; i++) {
         for (int j = 0; j < nch; j++) {
             if (img[i][j].r != img[i][j].b || img[i][j].r != img[i][j].g)
-                color=1;
+                color = 1;
         }
     }
     return color;
 }
 
 
-int lectureDossier(char *nomdossier){
-    DIR* rep =NULL;
-    int nbimg=0;
-    int size=0;
+int lectureDossier(char *nomdossier) {
+    DIR *rep = NULL;
+    int nbimg = 0;
+    int size = 0;
 //Lecture nombre d'image du dossier
-    DIR* repcount = NULL;
-    struct dirent* currentfile=NULL;
-
+    DIR *repcount = NULL;
+    struct dirent *currentfile = NULL;
 
 
     repcount = opendir(nomdossier);
-    if(repcount== NULL) {
+    if (repcount == NULL) {
         printf("Error read directory");
         return 1;
     }
@@ -350,104 +349,104 @@ int lectureDossier(char *nomdossier){
             size++;
         }
     }
-    if (closedir(repcount) == -1){
+    if (closedir(repcount) == -1) {
         printf("Error close directory");
         return 1;
     }
-    double **matrice=(double**)malloc(size*sizeof(double*));
-    for(int i=0; i < size ; i++)
-        matrice[i]=(double*)malloc(256*sizeof(double));
+    double **matrice = (double **) malloc(size * sizeof(double *));
+    for (int i = 0; i < size; i++)
+        matrice[i] = (double *) malloc(256 * sizeof(double));
 // lecture des images
 
-    FILE* f=NULL;
-    struct dirent* currentImg=NULL;
-    f=fopen("..\\output.csv","wa");
-    if(f == NULL){
+    FILE *f = NULL;
+    struct dirent *currentImg = NULL;
+    f = fopen("output.csv", "wa");
+    if (f == NULL) {
         printf("Error open output file");
         return 1;
     }
     // ouverture du dossier
     rep = opendir(nomdossier);
-    if(rep== NULL) {
+    if (rep == NULL) {
         printf("Error read directory");
         return 1;
     }
     //lecture des dossier
     currentImg = readdir(rep);
     currentImg = readdir(rep);
-    while ((currentImg = readdir(rep)) != NULL){
+    while ((currentImg = readdir(rep)) != NULL) {
         //vérification du type
         char imgName[255];
-        sprintf(imgName,"%s\\%s",nomdossier,currentImg->d_name);
-        char* imgType=NULL;
+        sprintf(imgName, "%s\\%s", nomdossier, currentImg->d_name);
+        char *imgType = NULL;
         //récupération de l'extension
-        imgType=strtok(currentImg->d_name,".");
-        imgType=strtok(NULL,".");
-        if(!strcmp(imgType,"ppm")){
-            double tauxR,tauxG,tauxB=0.0;
-            double texture=0.0;
-            double moyenneGradient=0.0;
+        imgType = strtok(currentImg->d_name, ".");
+        imgType = strtok(NULL, ".");
+        if (!strcmp(imgType, "ppm")) {
+            double tauxR, tauxG, tauxB = 0.0;
+            double texture = 0.0;
+            double moyenneGradient = 0.0;
 
-            int color=0;
-            int nbPixelContour=0;
-            rgb8** image;
-            byte** imageBW;
-            byte** gradient;
-            long nrl,nrh,ncl,nch;
-            image=LoadPPM_rgb8matrix(imgName, &nrl, &nrh, &ncl, &nch);
-            imageBW=bmatrix(nrl, nrh, ncl, nch);
-            gradient=bmatrix(nrl, nrh, ncl, nch);
-            color=colored(image,nrh,nch);
-            greyScalesRGBPicture(image,imageBW,nrh,nch);
-            double *hist= malloc(256 * sizeof(double));
-            histogramme(imageBW,nrh,nch,hist);
-            for(int k=0; k < 256 ; k++)
-                matrice[nbimg][k]=hist[k];
+            int color = 0;
+            int nbPixelContour = 0;
+            rgb8 **image;
+            byte **imageBW;
+            byte **gradient;
+            long nrl, nrh, ncl, nch;
+            image = LoadPPM_rgb8matrix(imgName, &nrl, &nrh, &ncl, &nch);
+            imageBW = bmatrix(nrl, nrh, ncl, nch);
+            gradient = bmatrix(nrl, nrh, ncl, nch);
+            color = colored(image, nrh, nch);
+            greyScalesRGBPicture(image, imageBW, nrh, nch);
+            double *hist = malloc(256 * sizeof(double));
+            histogramme(imageBW, nrh, nch, hist);
+            for (int k = 0; k < 256; k++)
+                matrice[nbimg][k] = hist[k];
             nbimg++;
-            if(color){
-                tauxR=tauxDeRouge(image,nrh,nch);
-                tauxG=tauxDeVert(image,nrh,nch);
-                tauxB=tauxDeBleu(image,nrh,nch);
+            if (color) {
+                tauxR = tauxDeRouge(image, nrh, nch);
+                tauxG = tauxDeVert(image, nrh, nch);
+                tauxB = tauxDeBleu(image, nrh, nch);
+            } else {
+                tauxR = 0.33;
+                tauxG = 0.33;
+                tauxB = 0.33;
             }
-            else{
-                tauxR=0.33;
-                tauxG=0.33;
-                tauxB=0.33;
-            }
-            texture=0;
-            normeGradient(image,gradient,nrl,nrh,ncl,nch);
-            detectionBords(image,gradient,20,&moyenneGradient,&nbPixelContour,nrl,nrh,ncl,nch);
-            fprintf(f,"%s;%d;%d;%lf;%lf;%lf;%lf;",currentImg->d_name,color,nbPixelContour,tauxR,tauxG,tauxB,moyenneGradient);
-            sauvegardeHistogramme(hist,f);
-            fprintf(f,"\n");
-            free_rgb8matrix(image, nrl,  nrh, ncl, nch) ;
-            free_bmatrix(gradient, nrl,  nrh, ncl, nch) ;
+            texture = 0;
+            normeGradient(image, gradient, nrl, nrh, ncl, nch);
+            detectionBords(image, gradient, 20, &moyenneGradient, &nbPixelContour, nrl, nrh, ncl, nch);
+            fprintf(f, "%s;%d;%d;%lf;%lf;%lf;%lf;", currentImg->d_name, color, nbPixelContour, tauxR, tauxG, tauxB,
+                    moyenneGradient);
+            sauvegardeHistogramme(hist, f);
+            fprintf(f, "\n");
+            free_rgb8matrix(image, nrl, nrh, ncl, nch);
+            free_bmatrix(gradient, nrl, nrh, ncl, nch);
             free(hist);
         }
     }
-    matriceDesDistance(matrice,size);
-    for(int j =0; j < size ; j++){
+    matriceDesDistance(matrice, size);
+    for (int j = 0; j < size; j++) {
         free(matrice[j]);
     }
     fclose(f);
-    if (closedir(rep) == -1){
+    if (closedir(rep) == -1) {
         printf("Error close directory");
         return 1;
     }
     return 0;
 }
 
-void matriceDesDistance(double **disttable,int size){
-    FILE * matrice=fopen(".."
-                         "\\matrice.csv","wa");
-    double distance=0.0;
-    for(int i=0; i < size ;i++) {
+void matriceDesDistance(double **disttable, int size) {
+    FILE *matrice = fopen(".."
+                          "\\matrice.csv", "wa");
+    double distance = 0.0;
+    for (int i = 0; i < size; i++) {
         double *hist = disttable[i];
-        for (int j = 0; j < size; j++){
+        for (int j = 0; j < size; j++) {
             double *hist2 = disttable[j];
-            distance=bhattacharyyaDistance(hist,hist2);
-            fprintf(matrice,"%lf;",distance);
+            distance = bhattacharyyaDistance(hist, hist2);
+            fprintf(matrice, "%lf;", distance);
         }
-        fprintf(matrice,"\n");
+        fprintf(matrice, "\n");
     }
 }

@@ -17,7 +17,7 @@ int main() {
      */
     long nrl, nrh, ncl, nch;
     byte **imageTest;
-    lectureDossier("D:\\Users\\Archambault Vincent\\Documents\\cours\\Indexation\\archivePPMPGM\\archive10ppm");
+    lectureDossier("images");
     printf("lecture done");
     /*
     // Load an image into 2D matrix

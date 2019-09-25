@@ -1,3 +1,4 @@
+import math
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -15,7 +16,8 @@ df2 = df.sort_values(['fisrt_image_name', 'second_image_name'])
 # Plotting
 fig = plt.figure(figsize=(17, 17))
 ax = fig.add_subplot(111)
-cax = ax.matshow(df2['distance'].values.reshape((500,500)), interpolation='none', vmin=0, vmax=100)
+cax = ax.matshow(df2['distance'].values.reshape((int(math.sqrt(len(df.index))), int(math.sqrt(len(df.index))))),
+                 interpolation='none', vmin=0, vmax=100)
 fig.colorbar(cax)
 plt.title('Image distances matrix')
 plt.setp(ax.get_xticklabels(), rotation=-45, ha="right", rotation_mode="anchor")

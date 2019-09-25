@@ -9,6 +9,7 @@
 #include "nrc/nralloc.h"
 
 
+
 /**
  *
  * @param mask
@@ -193,8 +194,6 @@ double tauxDeVert(rgb8 **img, int nrh, int nch) {
     return tauxg;
 }
 
-extern int **horizontal_gradient;
-extern int **vertical_gradient;
 
 /**
  * Additionne deux matrices de tailles identiques.
@@ -244,18 +243,31 @@ void border_detection_RGB(byte **inputImage, byte **gradientImage, long nrl, lon
  * @param nrl
  * @param ncl
  */
-void normeGradient(byte** img,byte** gradient,int nrh , int nch,int nrl,int ncl){
+/*void normeGradient(byte** img,byte** gradient,int nrl, int nrh, int ncl, int nch){
+    printf("%lu", horizontal_gradient[0][0]);
     byte **Gx= bmatrix(nrl, nrh, ncl, nch);
     byte **Gy= bmatrix(nrl, nrh, ncl, nch);
     for (int i = nrl+1  ; i < nrh; i++) {
         for (int j = ncl+1; j < nch; j++) {
-            Gx[i][j]=abs((horizontal_gradient[0][0]*img[i-1][j-1] + horizontal_gradient[0][2]*img[i-1][j+1] +horizontal_gradient[1][0]*img[i][j-1] +horizontal_gradient[1][2]*img[i-1][j-1]+horizontal_gradient[0][2]*img[i+1][j-1]+horizontal_gradient[2][2]*img[i+1][j+1] )/4);
-            Gy[i][j]=abs((vertical_gradient[0][0]*img[i-1][j-1] + vertical_gradient[0][2]*img[i-1][j+1] +horizontal_gradient[1][0]*img[i][j-1] +vertical_gradient[1][2]*img[i-1][j-1]+vertical_gradient[0][2]*img[i+1][j-1]+vertical_gradient[2][2]*img[i+1][j+1] )/4);
-            gradient[i][j]=(abs(Gx[i][j])+abs(Gy[i][j]))/2;
+            Gx[i][j]=abs((horizontal_gradient[0][0]*img[i-1][j-1] + horizontal_gradient[0][2]*img[i-1][j+1] +horizontal_gradient[1][0]*img[i][j-1] +horizontal_gradient[1][2]*img[i][j+1]+horizontal_gradient[0][2]*img[i][j+1]+horizontal_gradient[2][2]*img[i+1][j+1] )/4);
+            Gy[i][j]=abs((vertical_gradient[0][0]*img[i-1][j-1] + vertical_gradient[0][2]*img[i-1][j+1] +vertical_gradient[1][0]*img[i][j-1] +vertical_gradient[1][2]*img[i][j+1]+vertical_gradient[0][2]*img[i-1][j+1]+vertical_gradient[2][2]*img[i+1][j+1] )/4);
+            gradient[i][j]=((Gx[i][j])+(Gy[i][j]))/2;
         }
     }
 }
-
+*/
+void normeGradient(byte** img, byte** output, int nrl , int nrh,int ncl,int nch) {
+    byte **deriv_x, **deriv_y;
+    deriv_x = bmatrix(nrl, nrh, ncl, nch);
+    deriv_y = bmatrix(nrl, nrh, ncl, nch);
+    applyMaskToMatrix(horizontal_gradient, img, deriv_x, nrh-nrl,  nch-ncl);
+    applyMaskToMatrix(vertical_gradient, img, deriv_y, nrh-nrl, nch-ncl);
+    for (int i = 1; i < nrh - nrl ; i++) {
+        for (int j = 1; j < nch-ncl; j++) {
+            output[i][j] = sqrt(pow(deriv_x[i][j], 2) + pow(deriv_y[i][j], 2));
+        }
+    }
+}
 /**
  *
  * @param gradient

@@ -26,10 +26,12 @@ double bhattacharyyaDistance(double* hist1,double* hist2);
 double tauxDeRouge(rgb8** img,int nrh , int nch);
 double tauxDeBleu(rgb8** img,int nrh , int nch);
 double tauxDeVert(rgb8** img,int nrh , int nch);
-void normeGradient(byte** img,byte** gradient,int nrh , int nch,int nrl,int ncl);
+void normeGradient(byte** img,byte** gradient,int nrl, int nrh, int ncl, int nch);
 double moyenneNormeGradient(byte** gradient,int nrh , int nch);
 void border_detection_RGB (byte** inputImage, byte** gradientImage, long nrl, long nrh, long ncl, long nch);
 void addTwoImages (byte** image1, byte** image2, byte** ImageSum, long nrl, long nrh, long ncl, long nch);
 void sauvegardeHistogramme(char* nom,double* histogramme);
 
+extern const int horizontal_gradient [3][3] ;
+extern const int vertical_gradient[3][3];
 #endif //ATELIER_INDEXATION_FUNCTIONS_H

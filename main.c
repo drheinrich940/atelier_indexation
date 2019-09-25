@@ -16,6 +16,7 @@ int main() {
      * ncl = column lowest value
      * nrh = row highest value
      * nch = column highest value
+     * matrix[row][column]
      */
     long nrl, nrh, ncl, nch;
     byte **imageTest;
@@ -31,10 +32,13 @@ int main() {
     // Creating an empty matrix with our target dimensions.
     output = bmatrix(nrl, nrh, ncl, nch);
     printf("Created output matrix\n");
+    printf("%lu %lu \n", nrh, nch);
 
-    // Applying the horisontal gradiant to the image test.
+
+    // Applying the horisontal gradient to the image test.
     // nrh is the max value on the rows, and nch is the max value on the columns.
-    applyMaskToMatrix(horizontal_gradient, imageTest, output, nrh, nch);
+    //applyMaskToMatrix(horizontal_gradient, imageTest, output, nrh, nch);
+    normeGradient(imageTest, output, nrl, nrh, ncl, nch);
     printf("Applied mask to matrix\n");
 
     // Save the matrix into another .pgm file.

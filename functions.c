@@ -344,7 +344,44 @@ int colored(rgb8** img,int nrh , int nch){
 
 int lectureDossier(char *nomdossier){
     DIR* rep =NULL;
-    FILE* f;
+    int nbimg=0;
+    int size=0;
+//Lecture nombre d'image du dossier
+    DIR* repcount = NULL;
+    struct dirent* currentfile=NULL;
+
+
+
+    repcount = opendir(nomdossier);
+    if(repcount== NULL) {
+        printf("Error read directory");
+        return 1;
+    }
+
+    currentfile = readdir(repcount);
+    currentfile = readdir(repcount);
+    while ((currentfile = readdir(repcount)) != NULL) {
+        //vérification du type
+        char fileName[255];
+        sprintf(fileName, "%s\\%s", nomdossier, currentfile->d_name);
+        char *fileType = NULL;
+        //récupération de l'extension
+        fileType = strtok(currentfile->d_name, ".");
+        fileType = strtok(NULL, ".");
+        if (!strcmp(fileType, "ppm")) {
+            size++;
+        }
+    }
+    if (closedir(repcount) == -1){
+        printf("Error close directory");
+        return 1;
+    }
+    double **matrice=(double**)malloc(size*sizeof(double*));
+    for(int i=0; i < size ; i++)
+        matrice[i]=(double*)malloc(256*sizeof(double));
+// lecture des images
+
+    FILE* f=NULL;
     struct dirent* currentImg=NULL;
     f=fopen("..\\output.csv","wa");
     if(f == NULL){
@@ -360,7 +397,6 @@ int lectureDossier(char *nomdossier){
     //lecture des dossier
     currentImg = readdir(rep);
     currentImg = readdir(rep);
-// lecture des images
     while ((currentImg = readdir(rep)) != NULL){
         //vérification du type
         char imgName[255];
@@ -387,8 +423,9 @@ int lectureDossier(char *nomdossier){
             greyScalesRGBPicture(image,imageBW,nrh,nch);
             double *hist= malloc(256 * sizeof(double));
             histogramme(imageBW,nrh,nch,hist);
-            for(int i=0;i < 256 ; i++)
-                printf("out=%lf\n",hist[i]);
+            for(int k=0; k < 256 ; k++)
+                matrice[nbimg][k]=hist[k];
+            nbimg++;
             if(color){
                 tauxR=tauxDeRouge(image,nrh,nch);
                 tauxG=tauxDeVert(image,nrh,nch);
@@ -402,13 +439,17 @@ int lectureDossier(char *nomdossier){
             texture=0;
             normeGradient(image,gradient,nrl,nrh,ncl,nch);
             moyenneGradient=moyenneNormeGradient(gradient,nrl,nrh,ncl,nch);
-            fprintf(f,"%d;%d;%lf;%lf;%lf;%lf",color,nbPixelContour,tauxR,tauxG,tauxB,moyenneGradient);
+            fprintf(f,"%s;%d;%d;%lf;%lf;%lf;%lf",currentImg->d_name,color,nbPixelContour,tauxR,tauxG,tauxB,moyenneGradient);
             sauvegardeHistogramme(hist,f);
             fprintf(f,"\n");
-            free_bmatrix(image, nrl,  nrh, ncl, nch) ;
+            free_rgb8matrix(image, nrl,  nrh, ncl, nch) ;
             free_bmatrix(gradient, nrl,  nrh, ncl, nch) ;
             free(hist);
         }
+    }
+    matriceDesDistance(matrice,size);
+    for(int j =0; j < size ; j++){
+        free(matrice[j]);
     }
     fclose(f);
     if (closedir(rep) == -1){
@@ -416,4 +457,18 @@ int lectureDossier(char *nomdossier){
         return 1;
     }
     return 0;
+}
+
+void matriceDesDistance(double **disttable,int size){
+    FILE * matrice=fopen("..\\matrice.csv","wa");
+    double distance=0.0;
+    for(int i=0; i < size ;i++) {
+        double *hist = disttable[i];
+        for (int j = 0; j < size; j++){
+            double *hist2 = disttable[j];
+            distance=bhattacharyyaDistance(hist,hist2);
+            fprintf(matrice,"%lf;",distance);
+        }
+        fprintf(matrice,"\n");
+    }
 }

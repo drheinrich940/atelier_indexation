@@ -34,7 +34,7 @@ void addTwoImages (byte** image1, byte** image2, byte** ImageSum, long nrl, long
 void sauvegardeHistogramme(double* histogramme,FILE* f);
 int lectureDossier(char *nomdossier);
 int colored(rgb8** img,int nrh , int nch);
-
+void matriceDesDistance(double **disttable,int size);
 extern const int horizontal_gradient [3][3] ;
 extern const int vertical_gradient[3][3];
 #endif //ATELIER_INDEXATION_FUNCTIONS_H

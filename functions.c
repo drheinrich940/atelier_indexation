@@ -128,7 +128,6 @@ void greyScalesRGBPicture(rgb8 **matrix, byte **output, int matrix_max_x, int ma
 /// \param histogramme histogramme de l'image
 /// \return l'histogramme normaliser
 void histogramme(byte **img, int nrh, int nch, double *histogramme) {
-    histogramme = malloc(256 * sizeof(double));
     int max = nrh * nch;
     //initialise l'histogramme
     for (int i = 0; i < 256; i++) {
@@ -388,6 +387,8 @@ int lectureDossier(char *nomdossier){
             greyScalesRGBPicture(image,imageBW,nrh,nch);
             double *hist= malloc(256 * sizeof(double));
             histogramme(imageBW,nrh,nch,hist);
+            for(int i=0;i < 256 ; i++)
+                printf("out=%lf\n",hist[i]);
             if(color){
                 tauxR=tauxDeRouge(image,nrh,nch);
                 tauxG=tauxDeVert(image,nrh,nch);

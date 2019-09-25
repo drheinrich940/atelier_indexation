@@ -24,6 +24,7 @@ void applyMaskToMatrix_bounded(const int mask[3][3], byte **matrix, byte **outpu
 void binariesPicture(byte **matrix, byte **output, int matrix_max_x, int matrix_max_y, int limit);
 void greyScalesRGBPicture(rgb8 **matrix, byte **output, int matrix_max_x, int matrix_max_y);
 void histogramme(byte** img,int nrh , int nch,double *histogramme);
+void histogrammeRGB(rgb8 **img, int nrh, int nch, double *histogrammeR, double * histogrammeG, double* histogrammeB);
 double bhattacharyyaDistance(double* hist1,double* hist2);
 double tauxDeRouge(rgb8** img,int nrh , int nch);
 double tauxDeBleu(rgb8** img,int nrh , int nch);

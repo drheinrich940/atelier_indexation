@@ -133,23 +133,61 @@ void greyScalesRGBPicture(rgb8 **matrix, byte **output, int matrix_max_x, int ma
 /// \param nrh nombre de ligne de l'image
 /// \param nch nombre de colonne de l'image
 /// \param histogramme histogramme de l'image
-/// \return l'histogramme normaliser
+
 void histogramme(byte **img, int nrh, int nch, double *histogramme) {
-    int max = nrh * nch;
+    int max = (nrh+1) * (nch+1);
+
     //initialise l'histogramme
     for (int i = 0; i < 256; i++) {
         histogramme[i] = 0.0;
     }
 
     //classifie l'image suivant les différents niveaux de gris
-    for (int j = 0; j < nrh; j++) {
-        for (int k = 0; k < nch; k++) {
+    for (int j = 0; j <= nrh; j++) {
+        for (int k = 0; k <= nch; k++) {
             int index = img[j][k];
             histogramme[index] = histogramme[index] + 1.0;
         }
     }
     //normalisation de l'histogramme
     for (int m = 0; m < 256; m++) histogramme[m] = histogramme[m] / (max * 1.0);
+}
+///
+/// \param img l'image binarisée
+/// \param nrh nombre de ligne de l'image
+/// \param nch nombre de colonne de l'image
+/// \param histogrammeR histogramme du rouge
+/// \param histogrammeG histogramme du vert
+/// \param histogrammeB histogramme du bleu
+
+void histogrammeRGB(rgb8 **img, int nrh, int nch, double *histogrammeR, double * histogrammeG, double* histogrammeB) {
+    int max = (nrh+1) * (nch+1);
+
+    //initialise l'histogramme
+    for (int i = 0; i < 256; i++) {
+        histogrammeR[i] = 0.0;
+        histogrammeG[i] = 0.0;
+        histogrammeB[i] = 0.0;
+    }
+
+    //classifie l'image suivant les différents niveaux de gris
+    for (int j = 0; j <= nrh; j++) {
+        for (int k = 0; k <= nch; k++) {
+            int indexR = img[j][k].r;
+            int indexG = img[j][k].g;
+            int indexB = img[j][k].b;
+            histogrammeR[indexR] = histogrammeR[indexR] + 1.0;
+            histogrammeG[indexG] = histogrammeG[indexG] + 1.0;
+            histogrammeB[indexB] = histogrammeB[indexB] + 1.0;
+        }
+    }
+    //normalisation de l'histogramme
+    for (int m = 0; m < 256; m++)
+    {
+        histogrammeR[m] = histogrammeR[m] / (max * 1.0);
+        histogrammeG[m] = histogrammeG[m] / (max * 1.0);
+        histogrammeB[m] = histogrammeB[m] / (max * 1.0);
+    }
 }
 
 /// Calcul la Distance entre 2 histogramme
@@ -388,7 +426,7 @@ int lectureDossier(char *nomdossier) {
             double moyenneGradient = 0.0;
 
             int color = 0;
-            int nbPixelContour = 0;
+            long nbPixelContour = 0;
             rgb8 **image;
             byte **imageBW;
             byte **gradient;

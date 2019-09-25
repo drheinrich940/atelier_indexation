@@ -219,6 +219,26 @@ double tauxDeVert(rgb8 **img, int nrh, int nch) {
 }
 
 
+/**
+ * Additionne deux matrices de tailles identiques.
+ * @param image1
+ * @param image2
+ * @param ImageSum
+ * @param nrl
+ * @param nrh
+ * @param ncl
+ * @param nch
+ */
+void addTwoImages(byte **image1, byte **image2, byte **ImageSum, long nrl, long nrh, long ncl, long nch) {
+    long x_border = nch - ncl;
+    long y_border = nrh - nrl;
+
+    for (long i = 0; i <= x_border; i++) {
+        for (long j = 0; j <= y_border; j++) {
+            ImageSum[i][j] = image1[i][j] + image2[i][j];
+        }
+    }
+}
 
 /**
  *
@@ -277,10 +297,10 @@ void normeGradient(byte **img, byte **output, long nrl, long nrh, long ncl, long
  * @param nch
  * @return
  */
-double moyenneNormeGradient(byte **gradient, int nrh, int nch) {
+double moyenneNormeGradient(byte **gradient, long nrl, long nrh, long ncl, long nch) {
     double moyenne = 0.0;
-    for (int i = 0; i < nrh; i++) {
-        for (int j = 0; j < nch; j++) {
+    for (int i = nrl+1; i < nrh; i++) {
+        for (int j = ncl+1; j < nch; j++) {
             moyenne += gradient[i][j];
 
         }
@@ -381,7 +401,7 @@ int lectureDossier(char *nomdossier){
             }
             texture=0;
             normeGradient(image,gradient,nrl,nrh,ncl,nch);
-            moyenneGradient=moyenneNormeGradient(gradient,nrh,nch);
+            moyenneGradient=moyenneNormeGradient(gradient,nrl,nrh,ncl,nch);
             fprintf(f,"%d;%d;%lf;%lf;%lf;%lf",color,nbPixelContour,tauxR,tauxG,tauxB,moyenneGradient);
             sauvegardeHistogramme(hist,f);
             fprintf(f,"\n");

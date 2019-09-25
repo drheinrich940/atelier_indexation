@@ -18,7 +18,8 @@
 
 void printMask(const int mask[3][3]);
 int verifyRGBValue(int value);
-void applyMaskToMatrix(const int mask[3][3], byte **matrix, byte **outputMatrix, int nrl, int nrh, int ncl, int nch);
+void applyMaskToMatrix(int mask[3][3], byte **matrix, byte **outputMatrix, int matrix_max_x, int matrix_max_y);
+void applyMaskToMatrix_bounded(const int mask[3][3], byte **matrix, byte **outputMatrix, int nrl, int nrh, int ncl, int nch);
 void binariesPicture(byte **matrix, byte **output, int matrix_max_x, int matrix_max_y, int limit);
 void greyScalesRGBPicture(rgb8 **matrix, byte **output, int matrix_max_x, int matrix_max_y);
 void histogramme(byte** img,int nrh , int nch,double *histogramme);
@@ -27,9 +28,12 @@ double tauxDeRouge(rgb8** img,int nrh , int nch);
 double tauxDeBleu(rgb8** img,int nrh , int nch);
 double tauxDeVert(rgb8** img,int nrh , int nch);
 void normeGradient(byte** img, byte** output, long nrl , long nrh,long ncl,long nch);
-double moyenneNormeGradient(byte** gradient,int nrh , int nch);
+double moyenneNormeGradient(byte **gradient, long nrl, long nrh, long ncl, long nch);
 void detectionBords (byte** img, byte** output, long threshold, long nrl , long nrh,long ncl,long nch);
-void sauvegardeHistogramme(char* nom,double* histogramme);
+void addTwoImages (byte** image1, byte** image2, byte** ImageSum, long nrl, long nrh, long ncl, long nch);
+void sauvegardeHistogramme(double* histogramme,FILE* f);
+int lectureDossier(char *nomdossier);
+int colored(rgb8** img,int nrh , int nch);
 
 extern const int horizontal_gradient [3][3] ;
 extern const int vertical_gradient[3][3];

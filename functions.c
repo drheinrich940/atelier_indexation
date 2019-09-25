@@ -227,27 +227,6 @@ double tauxDeVert(rgb8 **img, int nrh, int nch) {
 
 
 /**
- * Additionne deux matrices de tailles identiques.
- * @param image1
- * @param image2
- * @param ImageSum
- * @param nrl
- * @param nrh
- * @param ncl
- * @param nch
- */
-void addTwoImages(byte **image1, byte **image2, byte **ImageSum, long nrl, long nrh, long ncl, long nch) {
-    long x_border = nch - ncl;
-    long y_border = nrh - nrl;
-
-    for (long i = 0; i <= x_border; i++) {
-        for (long j = 0; j <= y_border; j++) {
-            ImageSum[i][j] = image1[i][j] + image2[i][j];
-        }
-    }
-}
-
-/**
  *
  * @param inputImage
  * @param gradientImage
@@ -256,25 +235,34 @@ void addTwoImages(byte **image1, byte **image2, byte **ImageSum, long nrl, long 
  * @param ncl
  * @param nch
  */
-void detectionBords(byte **img, byte **output, long threshold, long nrl, long nrh, long ncl, long nch) {
+void detectionBords(byte **img, byte **output, long threshold,double* moyenneGradient,long* nbPixelBord, long nrl, long nrh, long ncl, long nch) {
     byte **deriv_x, **deriv_y;
-    long normeGradient;
+    double normeGradient;
+    *nbPixelBord=0;
+    *moyenneGradient=0;
     deriv_x = bmatrix(nrl, nrh, ncl, nch);
     deriv_y = bmatrix(nrl, nrh, ncl, nch);
+
     initMatrix(deriv_x, nrh, nch);
     initMatrix(deriv_y, nrh, nch);
+
     applyMaskToMatrix_bounded(horizontal_gradient, img, deriv_x, nrl, nrh, ncl, nch);
     applyMaskToMatrix_bounded(vertical_gradient, img, deriv_y, nrl, nrh, ncl, nch);
+
     for (int i = 1; i < nrh - nrl; i++) {
         for (int j = 1; j < nch - ncl; j++) {
             normeGradient = sqrt(pow(deriv_x[i][j], 2) + pow(deriv_y[i][j], 2));
+            *moyenneGradient+=normeGradient;
             if (normeGradient >= threshold) {
-                output[i][j] = normeGradient;
-            } else {
+                output[i][j] = 255;
+                (*nbPixelBord)++;
+            }
+            else {
                 output[i][j] = 0;
             }
         }
     }
+    *moyenneGradient = *moyenneGradient/((nrh - nrl-1)*(nch - ncl-1));
 }
 
 /**
@@ -297,25 +285,6 @@ void normeGradient(byte **img, byte **output, long nrl, long nrh, long ncl, long
             output[i][j] = sqrt(pow(deriv_x[i][j], 2) + pow(deriv_y[i][j], 2));
         }
     }
-}
-
-/**
- *
- * @param gradient
- * @param nrh
- * @param nch
- * @return
- */
-double moyenneNormeGradient(byte **gradient, long nrl, long nrh, long ncl, long nch) {
-    double moyenne = 0.0;
-    for (int i = nrl+1; i < nrh; i++) {
-        for (int j = ncl+1; j < nch; j++) {
-            moyenne += gradient[i][j];
-
-        }
-    }
-    moyenne = moyenne / (nrh * nch);
-    return moyenne;
 }
 
 /**

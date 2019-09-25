@@ -18,6 +18,8 @@ int main() {
      */
     long nrl, nrh, ncl, nch;
     byte **imageTest;
+    double moyenneGradient;
+    long nbPixelBord;
 
     // Load an image into 2D matrix
     imageTest = LoadPGM_bmatrix("rice.pgm", &nrl, &nrh, &ncl, &nch);
@@ -40,12 +42,13 @@ int main() {
     // nrh is the max value on the rows, and nch is the max value on the columns.
     //applyMaskToMatrix_bounded(vertical_gradient, imageTest, output_fromBounded, nrl, nrh, ncl, nch);
     //applyMaskToMatrix(horizontal_gradient, imageTest, output, nrh, nch);
-    detectionBords(imageTest, output_fromBounded,0, nrl, nrh, ncl, nch);
+    detectionBords(imageTest, output_fromBounded,30, &moyenneGradient,&nbPixelBord, nrl, nrh, ncl, nch);
     printf("Applied mask to matrix\n");
 
     // Gradient mean calculation
-    double moyenneGradient = moyenneNormeGradient(output_fromBounded, nrl, nrh, ncl, nch);
-    printf("Moyenne gradient : %d\n",moyenneGradient );
+
+    printf("Moyenne gradient : %f\n",moyenneGradient );
+    printf("Nombre de Pixels de contour : %d\n",nbPixelBord );
     // Save the matrix into another .pgm file.
     // SavePGM_bmatrix(output, nrl, nrh, ncl, nch, "output.pgm");
     SavePGM_bmatrix(output_fromBounded, nrl, nrh, ncl, nch, "output_fromBounded.pgm");

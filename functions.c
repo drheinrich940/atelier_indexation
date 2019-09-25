@@ -14,7 +14,7 @@
  *
  * @param mask
  */
-void printMask(int mask[3][3]) {
+void printMask(const int mask[3][3]) {
     for (int i = 0; i < 3; i++) {
         printf("\n");
         for (int j = 0; j < 3; j++) {
@@ -44,10 +44,8 @@ int verifyRGBValue(int value) {
  * @param matrix_max_y
  */
 void applyMaskToMatrix(const int mask[3][3], byte **matrix, byte **outputMatrix, int nrl, int nrh, int ncl, int nch) {
-    int matrix_max_x=nch-ncl;
-    int matrix_max_y=nrh-nrl;
-    for (int i = 1; i < matrix_max_y - 1; i++) {
-        for (int j = 1; j < matrix_max_x - 1; j++) {
+    for (int i = nrl+1; i < nrh - 1; i++) {
+        for (int j =ncl+ 1; j < nch - 1; j++) {
                 int pixel_value  = floor((mask[0][0] * matrix[i - 1][j - 1] + mask[0][1] *  matrix[i - 1][j] +
                         mask[0][2] *  matrix[i - 1][j + 1]
                         + mask[1][0] *  matrix[i][j - 1] + mask[1][1] *  matrix[i][j] +
@@ -225,8 +223,23 @@ void addTwoImages(byte **image1, byte **image2, byte **ImageSum, long nrl, long 
  * @param ncl
  * @param nch
  */
-void border_detection_RGB(byte **inputImage, byte **gradientImage, long nrl, long nrh, long ncl, long nch) {
-
+void detectionBords(byte** img, byte** output, long threshold, long nrl , long nrh,long ncl,long nch) {
+    byte **deriv_x, **deriv_y;
+    long normeGradient;
+    deriv_x = bmatrix(nrl, nrh, ncl, nch);
+    deriv_y = bmatrix(nrl, nrh, ncl, nch);
+    applyMaskToMatrix(horizontal_gradient, img, deriv_x, nrl, nrh, ncl, nch);
+    applyMaskToMatrix(vertical_gradient, img, deriv_y, nrl, nrh, ncl, nch);
+    for (int i = 1; i < nrh - nrl ; i++) {
+        for (int j = 1; j < nch-ncl; j++) {
+            normeGradient=sqrt(pow(deriv_x[i][j], 2) + pow(deriv_y[i][j], 2));
+            if (normeGradient>=threshold){
+                output[i][j] = normeGradient;}
+            else{
+                output[i][j]=0;
+            }
+        }
+    }
 }
 
 /**
@@ -238,7 +251,7 @@ void border_detection_RGB(byte **inputImage, byte **gradientImage, long nrl, lon
  * @param nrl
  * @param ncl
  */
-void normeGradient(byte** img, byte** output, int nrl , int nrh,int ncl,int nch) {
+void normeGradient(byte** img, byte** output, long nrl , long nrh,long ncl,long nch) {
     byte **deriv_x, **deriv_y;
     deriv_x = bmatrix(nrl, nrh, ncl, nch);
     deriv_y = bmatrix(nrl, nrh, ncl, nch);

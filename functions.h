@@ -16,7 +16,7 @@
 
 //TODO : FREE WHAT SHOULD BE
 
-void printMask(int mask[3][3]);
+void printMask(const int mask[3][3]);
 int verifyRGBValue(int value);
 void applyMaskToMatrix(const int mask[3][3], byte **matrix, byte **outputMatrix, int nrl, int nrh, int ncl, int nch);
 void binariesPicture(byte **matrix, byte **output, int matrix_max_x, int matrix_max_y, int limit);
@@ -26,9 +26,9 @@ double bhattacharyyaDistance(double* hist1,double* hist2);
 double tauxDeRouge(rgb8** img,int nrh , int nch);
 double tauxDeBleu(rgb8** img,int nrh , int nch);
 double tauxDeVert(rgb8** img,int nrh , int nch);
-void normeGradient(byte** img,byte** gradient,int nrl, int nrh, int ncl, int nch);
+void normeGradient(byte** img, byte** output, long nrl , long nrh,long ncl,long nch);
 double moyenneNormeGradient(byte** gradient,int nrh , int nch);
-void border_detection_RGB (byte** inputImage, byte** gradientImage, long nrl, long nrh, long ncl, long nch);
+void detectionBords (byte** img, byte** output, long threshold, long nrl , long nrh,long ncl,long nch);
 void addTwoImages (byte** image1, byte** image2, byte** ImageSum, long nrl, long nrh, long ncl, long nch);
 void sauvegardeHistogramme(char* nom,double* histogramme);
 

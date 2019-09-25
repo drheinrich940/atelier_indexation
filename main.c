@@ -37,8 +37,8 @@ int main() {
 
     // Applying the horisontal gradient to the image test.
     // nrh is the max value on the rows, and nch is the max value on the columns.
-    //applyMaskToMatrix(horizontal_gradient, imageTest, output, nrh, nch);
-    normeGradient(imageTest, output, nrl, nrh, ncl, nch);
+    applyMaskToMatrix(horizontal_gradient, imageTest, output, nrl, nrh, ncl, nch);
+    //detectionBords(imageTest, output,50, nrl, nrh, ncl, nch);
     printf("Applied mask to matrix\n");
 
     // Save the matrix into another .pgm file.

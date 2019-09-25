@@ -243,19 +243,13 @@ void border_detection_RGB(byte **inputImage, byte **gradientImage, long nrl, lon
  * @param nrl
  * @param ncl
  */
-/*void normeGradient(byte** img,byte** gradient,int nrl, int nrh, int ncl, int nch){
-    printf("%lu", horizontal_gradient[0][0]);
-    byte **Gx= bmatrix(nrl, nrh, ncl, nch);
-    byte **Gy= bmatrix(nrl, nrh, ncl, nch);
-    for (int i = nrl+1  ; i < nrh; i++) {
-        for (int j = ncl+1; j < nch; j++) {
-            Gx[i][j]=abs((horizontal_gradient[0][0]*img[i-1][j-1] + horizontal_gradient[0][2]*img[i-1][j+1] +horizontal_gradient[1][0]*img[i][j-1] +horizontal_gradient[1][2]*img[i][j+1]+horizontal_gradient[0][2]*img[i][j+1]+horizontal_gradient[2][2]*img[i+1][j+1] )/4);
-            Gy[i][j]=abs((vertical_gradient[0][0]*img[i-1][j-1] + vertical_gradient[0][2]*img[i-1][j+1] +vertical_gradient[1][0]*img[i][j-1] +vertical_gradient[1][2]*img[i][j+1]+vertical_gradient[0][2]*img[i-1][j+1]+vertical_gradient[2][2]*img[i+1][j+1] )/4);
-            gradient[i][j]=((Gx[i][j])+(Gy[i][j]))/2;
-        }
-    }
-}
-*/
+///
+/// \param img
+/// \param output
+/// \param nrl
+/// \param nrh
+/// \param ncl
+/// \param nch
 void normeGradient(byte** img, byte** output, int nrl , int nrh,int ncl,int nch) {
     byte **deriv_x, **deriv_y;
     deriv_x = bmatrix(nrl, nrh, ncl, nch);

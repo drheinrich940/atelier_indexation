@@ -44,6 +44,7 @@ int main() {
     // Save the matrix into another .pgm file.
     SavePGM_bmatrix(output, nrl, nrh, ncl, nch, "output.pgm") ;
     printf("Saved the output\n");
+    printf("%lu\n",output[2][2] );
 
     // Clean the memory.
     free_bmatrix(imageTest, nrl,  nrh, ncl, nch) ;

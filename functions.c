@@ -416,8 +416,8 @@ int lectureDossier(char *nomdossier){
             }
             texture=0;
             normeGradient(image,gradient,nrl,nrh,ncl,nch);
-            moyenneGradient=moyenneNormeGradient(gradient,nrl,nrh,ncl,nch);
-            fprintf(f,"%s;%d;%d;%lf;%lf;%lf;%lf",currentImg->d_name,color,nbPixelContour,tauxR,tauxG,tauxB,moyenneGradient);
+            detectionBords(image,gradient,20,&moyenneGradient,&nbPixelContour,nrl,nrh,ncl,nch);
+            fprintf(f,"%s;%d;%d;%lf;%lf;%lf;%lf;",currentImg->d_name,color,nbPixelContour,tauxR,tauxG,tauxB,moyenneGradient);
             sauvegardeHistogramme(hist,f);
             fprintf(f,"\n");
             free_rgb8matrix(image, nrl,  nrh, ncl, nch) ;

@@ -6,7 +6,6 @@
 #include "functions.h"
 #include "masks.h"
 
-
 int main() {
     // Initialazing image parameters
     /*
@@ -18,11 +17,11 @@ int main() {
      */
     long nrl, nrh, ncl, nch;
     byte **imageTest;
-    double moyenneGradient;
-    long nbPixelBord;
-
+    lectureDossier("D:\\Users\\Archambault Vincent\\Documents\\cours\\Indexation\\archivePPMPGM\\archive10ppm");
+    printf("lecture done");
+    /*
     // Load an image into 2D matrix
-    imageTest = LoadPGM_bmatrix("rice.pgm", &nrl, &nrh, &ncl, &nch);
+    imageTest = LoadPGM_bmatrix("114.pgm", &nrl, &nrh, &ncl, &nch);
 
     // Prints the chosen mask
     printMask(horizontal_gradient);
@@ -33,7 +32,6 @@ int main() {
     // Creating an empty matrix with our target dimensions.
     //output = bmatrix(nrl, nrh, ncl, nch);
     output_fromBounded = bmatrix(nrl, nrh, ncl, nch);
-    initMatrix(output_fromBounded, nrh, nch);
     printf("Created output matrix\n");
     printf("%lu %lu \n", nrh, nch);
 
@@ -42,13 +40,12 @@ int main() {
     // nrh is the max value on the rows, and nch is the max value on the columns.
     //applyMaskToMatrix_bounded(vertical_gradient, imageTest, output_fromBounded, nrl, nrh, ncl, nch);
     //applyMaskToMatrix(horizontal_gradient, imageTest, output, nrh, nch);
-    detectionBords(imageTest, output_fromBounded,30, &moyenneGradient,&nbPixelBord, nrl, nrh, ncl, nch);
+    detectionBords(imageTest, output_fromBounded,0, nrl, nrh, ncl, nch);
     printf("Applied mask to matrix\n");
 
     // Gradient mean calculation
-
-    printf("Moyenne gradient : %f\n",moyenneGradient );
-    printf("Nombre de Pixels de contour : %d\n",nbPixelBord );
+    double moyenneGradient = moyenneNormeGradient(output_fromBounded, nrl, nrh, ncl, nch);
+    printf("Moyenne gradient : %d\n",moyenneGradient );
     // Save the matrix into another .pgm file.
     // SavePGM_bmatrix(output, nrl, nrh, ncl, nch, "output.pgm");
     SavePGM_bmatrix(output_fromBounded, nrl, nrh, ncl, nch, "output_fromBounded.pgm");
@@ -59,5 +56,6 @@ int main() {
    // free_bmatrix(output, nrl, nrh, ncl, nch);
     free_bmatrix(output_fromBounded, nrl, nrh, ncl, nch);
     printf("Memory is free");
+     */
     return 0;
 }

@@ -6,6 +6,10 @@
 #include "functions.h"
 #include "masks.h"
 
+/*
+ * NO MORE COMMITS INCLUDING main.c !!!!!!!!
+ */
+
 int main() {
     // Initialazing image parameters
     /*

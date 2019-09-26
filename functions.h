@@ -30,12 +30,15 @@ double tauxDeRouge(rgb8** img,int nrh , int nch);
 double tauxDeBleu(rgb8** img,int nrh , int nch);
 double tauxDeVert(rgb8** img,int nrh , int nch);
 void normeGradient(byte** img, byte** output, long nrl , long nrh,long ncl,long nch);
-void detectionBords (byte** img, byte** output, long threshold, double* moyenneNormeGradient, long* nbPixelBord, long nrl , long nrh,long ncl,long nch);
+void detectionBords (byte** img, byte** output, long threshold, double* moyenneNormeGradient, double* nbPixelBord, long nrl , long nrh,long ncl,long nch);
 void sauvegardeHistogramme(double* histogramme,FILE* f);
 int lectureDossier(char *nomdossier);
 //int colored(rgb8** img,int nrh , int nch);
 int colored(double*histogrammeBW ,double* histogrammeC,double SEUIL);
 void matriceDesDistance(double **disttable,int size);
+int lectureDossierSansHist(char *nomdossier);
+double euclidienneDistance(double* hist1,double* hist2);
+void sauvegardeTableHistogramme(double *histogramme, FILE *f,char * nom,int *index);
 extern const int horizontal_gradient [3][3] ;
 extern const int vertical_gradient[3][3];
 #endif //ATELIER_INDEXATION_FUNCTIONS_H

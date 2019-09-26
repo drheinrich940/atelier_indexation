@@ -331,9 +331,10 @@ void normeGradient(byte **img, byte **output, long nrl, long nrh, long ncl, long
  * @param histogramme histogramme a enregistré
  */
 void sauvegardeHistogramme(double *histogramme, FILE *f) {
-    for (int i = 0; i < 256; i++) {
-        fprintf(f, "%lf,", histogramme[i]);
+    for (int i = 0; i < 255; i++) {
+        fprintf(f, "%lf|", histogramme[i]);
     }
+    fprintf(f, "%lf", histogramme[255]);
 }
 
 
@@ -344,7 +345,8 @@ void sauvegardeHistogramme(double *histogramme, FILE *f) {
  * @param nch
  * @return 1 si l'image est coloré ou 0 si l'image est en noir est blanc
  */
-int colored(rgb8 **img, int nrh, int nch) {
+ /*
+int colored(rgb8 **img ,int nrh, int nch) {
     int i = 0;
     int j = 0;
     int color = 0;
@@ -356,7 +358,17 @@ int colored(rgb8 **img, int nrh, int nch) {
     }
     return color;
 }
+*/
 
+int colored(double*histogrammeBW ,double* histogrammeC,double SEUIL) {
+    int i = 0;
+    int j = 0;
+    int color = 0;
+    double distance = bhattacharyyaDistance(histogrammeBW,histogrammeC);
+            if(distance > SEUIL)
+                color=1;
+    return color;
+}
 
 int lectureDossier(char *nomdossier) {
     DIR *rep = NULL;
@@ -398,11 +410,12 @@ int lectureDossier(char *nomdossier) {
 
     FILE *f = NULL;
     struct dirent *currentImg = NULL;
-    f = fopen("output.csv", "wa");
+    f = fopen("..\\output.csv", "wa");
     if (f == NULL) {
         printf("Error open output file");
         return 1;
     }
+    fprintf(f, "nom,couleur,contour,tauxderouge,tauxdevert,tauxdebleu,moyennedugradient,histogramme\n");
     // ouverture du dossier
     rep = opendir(nomdossier);
     if (rep == NULL) {
@@ -434,10 +447,15 @@ int lectureDossier(char *nomdossier) {
             image = LoadPPM_rgb8matrix(imgName, &nrl, &nrh, &ncl, &nch);
             imageBW = bmatrix(nrl, nrh, ncl, nch);
             gradient = bmatrix(nrl, nrh, ncl, nch);
-            color = colored(image, nrh, nch);
             greyScalesRGBPicture(image, imageBW, nrh, nch);
             double *hist = malloc(256 * sizeof(double));
             histogramme(imageBW, nrh, nch, hist);
+
+            double *histR = malloc(256 * sizeof(double));
+            double *histG = malloc(256 * sizeof(double));
+            double *histB = malloc(256 * sizeof(double));
+            histogrammeRGB(image,nrh,nch,histR,histG,histB);
+            color = colored(hist,histR,0.006);
             for (int k = 0; k < 256; k++)
                 matrice[nbimg][k] = hist[k];
             nbimg++;
@@ -452,8 +470,8 @@ int lectureDossier(char *nomdossier) {
             }
             texture = 0;
             normeGradient(image, gradient, nrl, nrh, ncl, nch);
-            detectionBords(image, gradient, 20, &moyenneGradient, &nbPixelContour, nrl, nrh, ncl, nch);
-            fprintf(f, "%s;%d;%d;%lf;%lf;%lf;%lf;", currentImg->d_name, color, nbPixelContour, tauxR, tauxG, tauxB,
+            detectionBords(imageBW, gradient, 20, &moyenneGradient, &nbPixelContour, nrl, nrh, ncl, nch);
+            fprintf(f, "%s.jpg,%d,%d,%lf,%lf,%lf,%lf,", currentImg->d_name, color, nbPixelContour, tauxR, tauxG, tauxB,
                     moyenneGradient);
             sauvegardeHistogramme(hist, f);
             fprintf(f, "\n");
@@ -477,14 +495,39 @@ int lectureDossier(char *nomdossier) {
 void matriceDesDistance(double **disttable, int size) {
     FILE *matrice = fopen(".."
                           "\\matrice.csv", "wa");
+    double matricedistance[size][size];
     double distance = 0.0;
+    double distanceMax = 0.0;
+    //calcul des distance
     for (int i = 0; i < size; i++) {
         double *hist = disttable[i];
         for (int j = 0; j < size; j++) {
             double *hist2 = disttable[j];
             distance = bhattacharyyaDistance(hist, hist2);
-            fprintf(matrice, "%lf;", distance);
+            if(distance > distanceMax)
+                distanceMax=distance;
+            matricedistance[i][j]=distance;
         }
+    }
+    //normalisation
+    for (int index = 0; index < size; index++) {
+        for (int index2 = 0; index2 < size; index2++) {
+            matricedistance[index][index2]=matricedistance[index][index2]*100/distanceMax;
+        }
+    }
+    //sauvegarde
+    for (int k = 0; k < size-1; k++)
+        fprintf(matrice, "%d,", k+1);
+    fprintf(matrice, "%d\n", size);
+    for (int l = 0; l < size; l++) {
+        double *hist = disttable[l];
+        for (int m = 0; m < size-1; m++) {
+            fprintf(matrice, "%lf,", matricedistance[l][m]);
+        }
+        double *hist2 = disttable[size-1];
+        fprintf(matrice, "%lf", matricedistance[l][size-1]);
         fprintf(matrice, "\n");
     }
+    fclose(matrice);
 }
+

@@ -203,64 +203,27 @@ double bhattacharyyaDistance(double *hist1, double *hist2) {
     return distance;
 }
 
-/// Calcul le Taux de rouge dans une image
-/// \param img image coloré rgb
-/// \param nrh nombre de lignes
-/// \param nch nombre de colonnes
-/// \return le taux de rouge d'une image
-double tauxDeRouge(rgb8 **img, int nrh, int nch) {
-    double tauxr = 0.0;
-    double tauxg = 0.0;
-    double tauxb = 0.0;
-    for (int i = 0; i < nrh; i++) {
-        for (int j = 0; j < nch; j++) {
-            tauxr += img[i][j].r;
-            tauxb += img[i][j].b;
-            tauxg += img[i][j].g;
+///
+/// \param img
+/// \param tauxr
+/// \param tauxg
+/// \param tauxb
+/// \param nrl
+/// \param nrh
+/// \param ncl
+/// \param nch
+void tauxDeCouleurs(rgb8 **img,double *tauxr, double *tauxg, double *tauxb, long nrl, long nrh, long ncl, long nch) {
+    *tauxr = 0.0;
+    *tauxg = 0.0;
+    *tauxb = 0.0;
+    for (int i = 0; i < nrh-nrl; i++) {
+        for (int j = 0; j < nch-ncl; j++) {
+            *tauxr += img[i][j].r;
+            *tauxg += img[i][j].g;
+            *tauxb += img[i][j].b;
         }
     }
-    tauxr = tauxr / (tauxr + tauxb + tauxg);
-    return tauxr;
-}
-
-/// Calcul le Taux de bleu dans une image
-/// \param img image coloré rgb
-/// \param nrh nombre de lignes
-/// \param nch nombre de colonnes
-/// \return le taux de bleu d'une image
-double tauxDeBleu(rgb8 **img, int nrh, int nch) {
-    double tauxr = 0.0;
-    double tauxg = 0.0;
-    double tauxb = 0.0;
-    for (int i = 0; i < nrh; i++) {
-        for (int j = 0; j < nch; j++) {
-            tauxr += img[i][j].r;
-            tauxb += img[i][j].b;
-            tauxg += img[i][j].g;
-        }
-    }
-    tauxb = tauxb / (tauxr + tauxb + tauxg);
-    return tauxb;
-}
-
-/// Calcul le Taux de vert dans une image
-/// \param img image coloré rgb
-/// \param nrh nombre de lignes
-/// \param nch nombre de colonnes
-/// \return le taux de vert d'une image
-double tauxDeVert(rgb8 **img, int nrh, int nch) {
-    double tauxr = 0.0;
-    double tauxg = 0.0;
-    double tauxb = 0.0;
-    for (int i = 0; i < nrh; i++) {
-        for (int j = 0; j < nch; j++) {
-            tauxr += img[i][j].r;
-            tauxb += img[i][j].b;
-            tauxg += img[i][j].g;
-        }
-    }
-    tauxg = tauxg / (tauxr + tauxb + tauxg);
-    return tauxg;
+    *tauxr = *tauxr / (*tauxr + *tauxb + *tauxg);
 }
 
 
@@ -301,28 +264,6 @@ void detectionBords(byte **img, byte **output, long threshold, double *moyenneGr
         }
     }
     *moyenneGradient = *moyenneGradient / ((nrh - nrl - 1) * (nch - ncl - 1));
-}
-
-/**
- *
- * @param img
- * @param gradient
- * @param nrh
- * @param nch
- * @param nrl
- * @param ncl
- */
-void normeGradient(byte **img, byte **output, long nrl, long nrh, long ncl, long nch) {
-    byte **deriv_x, **deriv_y;
-    deriv_x = bmatrix(nrl, nrh, ncl, nch);
-    deriv_y = bmatrix(nrl, nrh, ncl, nch);
-    applyMaskToMatrix_bounded(horizontal_gradient, img, deriv_x, nrl, nrh, ncl, nch);
-    applyMaskToMatrix_bounded(vertical_gradient, img, deriv_y, nrl, nrh, ncl, nch);
-    for (int i = 1; i < nrh - nrl; i++) {
-        for (int j = 1; j < nch - ncl; j++) {
-            output[i][j] = sqrt(pow(deriv_x[i][j], 2) + pow(deriv_y[i][j], 2));
-        }
-    }
 }
 
 /**
@@ -460,16 +401,13 @@ int lectureDossier(char *nomdossier) {
                 matrice[nbimg][k] = hist[k];
             nbimg++;
             if (color) {
-                tauxR = tauxDeRouge(image, nrh, nch);
-                tauxG = tauxDeVert(image, nrh, nch);
-                tauxB = tauxDeBleu(image, nrh, nch);
+                tauxDeCouleurs(image,&tauxR,&tauxG,&tauxB, nrl, nrh, ncl, nch);
             } else {
                 tauxR = 0.33;
                 tauxG = 0.33;
                 tauxB = 0.33;
             }
             texture = 0;
-            normeGradient(image, gradient, nrl, nrh, ncl, nch);
             detectionBords(imageBW, gradient, 20, &moyenneGradient, &nbPixelContour, nrl, nrh, ncl, nch);
             fprintf(f, "%s.jpg,%d,%d,%lf,%lf,%lf,%lf,", currentImg->d_name, color, nbPixelContour, tauxR, tauxG, tauxB,
                     moyenneGradient);

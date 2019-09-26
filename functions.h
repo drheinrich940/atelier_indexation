@@ -26,10 +26,7 @@ void greyScalesRGBPicture(rgb8 **matrix, byte **output, int matrix_max_x, int ma
 void histogramme(byte** img,int nrh , int nch,double *histogramme);
 void histogrammeRGB(rgb8 **img, int nrh, int nch, double *histogrammeR, double * histogrammeG, double* histogrammeB);
 double bhattacharyyaDistance(double* hist1,double* hist2);
-double tauxDeRouge(rgb8** img,int nrh , int nch);
-double tauxDeBleu(rgb8** img,int nrh , int nch);
-double tauxDeVert(rgb8** img,int nrh , int nch);
-void normeGradient(byte** img, byte** output, long nrl , long nrh,long ncl,long nch);
+void tauxDeCouleurs(rgb8 **img,double *tauxr, double *tauxg, double *tauxb, long nrl, long nrh, long ncl, long nch);
 void detectionBords (byte** img, byte** output, long threshold, double* moyenneNormeGradient, long* nbPixelBord, long nrl , long nrh,long ncl,long nch);
 void sauvegardeHistogramme(double* histogramme,FILE* f);
 int lectureDossier(char *nomdossier);

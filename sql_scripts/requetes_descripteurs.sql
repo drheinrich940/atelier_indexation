@@ -15,6 +15,13 @@ select NOM
 from MULTIMEDIA
 where COULEUR = 1
   and TAUXDEVERT > 0.4;
+
+-- Selection des images avec peu de contours
+select NOM
+from MULTIMEDIA
+where CONTOUR < 500;
+
+
 declare
     nom_v          varchar2(50);
     distance_v      float;
@@ -25,7 +32,8 @@ declare
                        from multimedia;
 begin
 
-
+    -- Calcul l'image avec la moyenne de gradient le plus proche
+    -- Donc l'image avec le même taux de texture
     distance_v := 9999;
     nom_v := 'empty';
     select * into evaluated_elem from MULTIMEDIA where NOM = '462.jpg';

@@ -213,17 +213,21 @@ double bhattacharyyaDistance(double *hist1, double *hist2) {
 /// \param ncl
 /// \param nch
 void tauxDeCouleurs(rgb8 **img,double *tauxr, double *tauxg, double *tauxb, long nrl, long nrh, long ncl, long nch) {
-    *tauxr = 0.0;
-    *tauxg = 0.0;
-    *tauxb = 0.0;
+    (*tauxr) = 0.0;
+    (*tauxg) = 0.0;
+    (*tauxb) = 0.0;
     for (int i = 0; i < nrh-nrl; i++) {
         for (int j = 0; j < nch-ncl; j++) {
-            *tauxr += img[i][j].r;
-            *tauxg += img[i][j].g;
-            *tauxb += img[i][j].b;
+            (*tauxr) += img[i][j].r;
+            (*tauxg) += img[i][j].g;
+            (*tauxb) += img[i][j].b;
         }
     }
-    *tauxr = *tauxr / (*tauxr + *tauxb + *tauxg);
+    int total=((*tauxr) + (*tauxb) + (*tauxg));
+    (*tauxr) = (*tauxr) / total;
+    (*tauxg) = (*tauxg) / total;
+    (*tauxb) = (*tauxb) / total;
+
 }
 
 
@@ -240,7 +244,7 @@ void detectionBords(byte **img, byte **output, long threshold, double *moyenneGr
                     long nrh, long ncl, long nch) {
     byte **deriv_x, **deriv_y;
     double normeGradient;
-    *nbPixelBord = 0;
+    *nbPixelBord = 0.0;
     *moyenneGradient = 0;
     deriv_x = bmatrix(nrl, nrh, ncl, nch);
     deriv_y = bmatrix(nrl, nrh, ncl, nch);
@@ -353,12 +357,12 @@ int lectureDossier(char *nomdossier) {
 
     FILE *f = NULL;
     struct dirent *currentImg = NULL;
-    f = fopen("..\\output.csv", "wa");
+    f = fopen("..\\outputavechist.csv", "wa");
     if (f == NULL) {
         printf("Error open output file");
         return 1;
     }
-    fprintf(f, "nom,couleur,contour,tauxderouge,tauxdevert,tauxdebleu,moyennedugradient,histogramme\n");
+    fprintf(f,"nom,couleur,contour,tauxderouge,tauxdevert,tauxdebleu,moyennedugradient,histogramme\n");
     // ouverture du dossier
     rep = opendir(nomdossier);
     if (rep == NULL) {
@@ -382,7 +386,7 @@ int lectureDossier(char *nomdossier) {
             double moyenneGradient = 0.0;
 
             int color = 0;
-            long nbPixelContour = 0;
+            double nbPixelContour = 0;
             rgb8 **image;
             byte **imageBW;
             byte **gradient;
@@ -436,10 +440,6 @@ int lectureDossierSansHist(char *nomdossier) {
     DIR *rep = NULL;
     int nbimg = 0;
     int size = 0;
-    int indexBW=0;
-    int indexR=0;
-    int indexG=0;
-    int indexB=0;
 //Lecture nombre d'image du dossier
     DIR *repcount = NULL;
     struct dirent *currentfile = NULL;
@@ -473,43 +473,15 @@ int lectureDossierSansHist(char *nomdossier) {
     for (int i = 0; i < size; i++)
         matrice[i] = (double *) malloc(256 * sizeof(double));
 // lecture des images
-    struct dirent *currentImg = NULL;
+
     FILE *f = NULL;
+    struct dirent *currentImg = NULL;
     f = fopen("..\\outputsanshist.csv", "wa");
     if (f == NULL) {
         printf("Error open output file");
         return 1;
     }
-
-    FILE *fhistBW = NULL;
-    fhistBW = fopen("..\\outputhistBW.csv", "wa");
-    if (f == NULL) {
-        printf("Error open output file");
-        return 1;
-    }
-    FILE *fhistR = NULL;
-    fhistR = fopen("..\\outputhistR.csv", "wa");
-    if (fhistR == NULL) {
-        printf("Error open output file");
-        return 1;
-    }
-    FILE *fhistG = NULL;
-    fhistG = fopen("..\\outputhistG.csv", "wa");
-    if (fhistG == NULL) {
-        printf("Error open output file");
-        return 1;
-    }
-    FILE *fhistB = NULL;
-    fhistB = fopen("..\\outputhistB.csv", "wa");
-    if (fhistB == NULL) {
-        printf("Error open output file");
-        return 1;
-    }
-    fprintf(fhistBW, "rowid,nom,indiceNB,tauxNB\n");
-    fprintf(fhistR, "rowid,nom,indiceR,tauxR\n");
-    fprintf(fhistB, "rowid,nom,indiceB,tauxB\n");
-    fprintf(fhistG, "rowid,nom,indiceG,tauxG\n");
-    fprintf(f, "nom,couleur,contour,tauxderouge,tauxdevert,tauxdebleu,moyennedugradient\n");
+    fprintf(f,"nom,couleur,contour,tauxderouge,tauxdevert,tauxdebleu,moyennedugradient\n");
     // ouverture du dossier
     rep = opendir(nomdossier);
     if (rep == NULL) {
@@ -533,7 +505,7 @@ int lectureDossierSansHist(char *nomdossier) {
             double moyenneGradient = 0.0;
 
             int color = 0;
-            long nbPixelContour = 0;
+            double nbPixelContour = 0;
             rgb8 **image;
             byte **imageBW;
             byte **gradient;
@@ -554,20 +526,15 @@ int lectureDossierSansHist(char *nomdossier) {
                 matrice[nbimg][k] = hist[k];
             nbimg++;
             if (color) {
-                tauxR = tauxDeRouge(image, nrh, nch);
-                tauxG = tauxDeVert(image, nrh, nch);
-                tauxB = tauxDeBleu(image, nrh, nch);
+                tauxDeCouleurs(image,&tauxR,&tauxG,&tauxB, nrl, nrh, ncl, nch);
             } else {
                 tauxR = 0.33;
                 tauxG = 0.33;
                 tauxB = 0.33;
             }
-            sauvegardeTableHistogramme(hist,fhistBW,currentImg->d_name,&indexBW);
-            sauvegardeTableHistogramme(histR,fhistR,currentImg->d_name,&indexR);
-            sauvegardeTableHistogramme(histG,fhistG,currentImg->d_name,&indexG);
-            sauvegardeTableHistogramme(histB,fhistB,currentImg->d_name,&indexB);
+            texture = 0;
             detectionBords(imageBW, gradient, 20, &moyenneGradient, &nbPixelContour, nrl, nrh, ncl, nch);
-            fprintf(f, "%s.jpg,%d,%d,%lf,%lf,%lf,%lf", currentImg->d_name, color, nbPixelContour, tauxR, tauxG, tauxB,
+            fprintf(f, "%s.jpg,%d,%lf,%lf,%lf,%lf,%lf,", currentImg->d_name, color, nbPixelContour, tauxR, tauxG, tauxB,
                     moyenneGradient);
             fprintf(f, "\n");
             free_rgb8matrix(image, nrl, nrh, ncl, nch);
@@ -580,10 +547,6 @@ int lectureDossierSansHist(char *nomdossier) {
         free(matrice[j]);
     }
     fclose(f);
-    fclose(fhistB);
-    fclose(fhistBW);
-    fclose(fhistG);
-    fclose(fhistR);
     if (closedir(rep) == -1) {
         printf("Error close directory");
         return 1;

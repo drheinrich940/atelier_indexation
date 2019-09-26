@@ -4,9 +4,15 @@ drop table distance_table;
 -- creation de la table d’images
 create table multimedia
 (
-    nom       varchar2(50),
-    image     ordsys.ordimage,
-    signature ordsys.ordimageSignature
+    nom               varchar2(50),
+    image             ordsys.ordimage,
+    signature         ordsys.ordimageSignature,
+    couleur           integer,
+    Contour           integer,
+    TauxDeRouge       float,
+    TauxDeVert        float,
+    TauxDeBleu        float,
+    MoyenneDuGradient float
 );
 
 create table distance_table
@@ -73,7 +79,8 @@ begin
             for colonne_distance in mm_col
                 loop
                     insert into distance_table(fisrt_image_name, second_image_name, distance)
-                    values (CAST(REPLACE(ligne_distance.NOM, '.jpg', '') AS INT), CAST(REPLACE(colonne_distance.NOM, '.jpg', '') AS INT),
+                    values (CAST(REPLACE(ligne_distance.NOM, '.jpg', '') AS INT),
+                            CAST(REPLACE(colonne_distance.NOM, '.jpg', '') AS INT),
                             ordsys.ordimageSignature.evaluateScore(ligne_distance.SIGNATURE, colonne_distance.SIGNATURE,
                                                                    'color = 0.5, texture = 0, shape =0, location = 0'));
                 end loop;

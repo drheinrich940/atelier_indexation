@@ -1,5 +1,7 @@
-drop table multimedia;
-drop table distance_table;
+--drop table multimedia;
+--drop table distance_table;
+
+create type histogram as VARRAY (256) of double precision;
 
 -- creation de la table d’images
 create table multimedia
@@ -12,7 +14,8 @@ create table multimedia
     TauxDeRouge       float,
     TauxDeVert        float,
     TauxDeBleu        float,
-    MoyenneDuGradient float
+    MoyenneDuGradient float,
+    Histogramme       histogram
 );
 
 create table distance_table

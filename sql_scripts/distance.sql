@@ -41,3 +41,11 @@ begin
     end loop;
      DBMS_OUTPUT.PUT_LINE('Closest element to ' || nom_target || ' is ' || bestEquivalent);
 end;
+
+create table dist_batacharya_table
+(
+    image1        varchar2(50),
+    image2        varchar2(50),
+    distance        float
+);
+

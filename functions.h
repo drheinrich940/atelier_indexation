@@ -38,4 +38,5 @@ void sauvegardeTableHistogramme(double *histogramme, FILE *f,char * nom,int *ind
 double euclidienneDistance(double* hist1,double* hist2);
 extern const int horizontal_gradient [3][3] ;
 extern const int vertical_gradient[3][3];
+void b_distToCSV(char *directory);
 #endif //ATELIER_INDEXATION_FUNCTIONS_H

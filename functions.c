@@ -610,3 +610,53 @@ void sauvegardeTableHistogramme(double *histogramme, FILE *f,char * nom,int *ind
         (*index)++;
     }
 }
+/*
+void b_distToCSV(char *directory) {
+    DIR *rep = NULL;
+    int nbimg = 0;
+    int size = 0;
+    DIR *repcount1 = NULL;
+    DIR *repcount2 = NULL;
+    struct dirent *currentfile = NULL;
+    repcount1 = opendir(directory);
+    repcount2 = opendir(directory);
+    if (repcount1 == NULL) {
+        printf("Error read directory");
+        return;
+    }
+    currentfile = readdir(repcount1);
+    currentfile = readdir(repcount1);
+    while ((currentfile = readdir(repcount1)) != NULL) {
+
+        char currImgName[255];
+        sprintf(currImgName, "%s\\%s", directory, currentfile->d_name);
+        rgb8 **image;
+        byte **imageBW;
+        long nrl, nrh, ncl, nch;
+        image = LoadPPM_rgb8matrix(currImgName, &nrl, &nrh, &ncl, &nch);
+        imageBW = bmatrix(nrl, nrh, ncl, nch);
+        greyScalesRGBPicture(image, imageBW, nrh, nch);
+        double *hist = malloc(256 * sizeof(double));
+        histogramme(imageBW, nrh, nch, hist);
+
+        while ((currentfile = readdir(repcount2)) != NULL) {
+            char comparedImgName[255];
+            sprintf(comparedImgName, "%s\\%s", directory, currentfile->d_name);
+            rgb8 **image_comp;
+            byte **imageBW_comp;
+            long nrl_comp, nrh_comp, ncl_comp, nch_comp;
+            image_comp = LoadPPM_rgb8matrix(comparedImgName, &nrl_comp, &nrh_comp, &ncl_comp, &nch_comp);
+            imageBW_comp = bmatrix(nrl_comp, nrh_comp, ncl_comp, nch_comp);
+            greyScalesRGBPicture(image_comp, imageBW_comp, nrh_comp, nch_comp);
+            double *hist_comp = malloc(256 * sizeof(double));
+            histogramme(imageBW_comp, nrh_comp, nch_comp, hist_comp);
+            double distance = bhattacharyyaDistance(hist, hist_comp);
+            printf("%c %c %f", currImgName, comparedImgName, distance);
+            free_rgb8matrix(image_comp, nrl_comp, nrh_comp, ncl_comp, nch_comp);
+            free_bmatrix(imageBW_comp, nrl_comp, nrh_comp, ncl_comp, nch_comp);
+        }
+        free_rgb8matrix(image, nrl, nrh, ncl, nch);
+        free_bmatrix(imageBW, nrl, nrh, ncl, nch);
+    }
+}
+*/
